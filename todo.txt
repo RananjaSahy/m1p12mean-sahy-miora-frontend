@@ -1,0 +1,193 @@
+ng generate component components/services
+
+"architect": {
+  "build": {
+    "builder": "@angular-devkit/build-angular:application",
+    "options": {
+      "outputPath": "dist/m1p12mean-sahy-miora-frontend",
+      "index": "src/index.html",
+      "browser": "src/main.ts",
+      "polyfills": [
+        "zone.js"
+      ],
+      "tsConfig": "tsconfig.app.json",
+      "assets": [
+        {
+          "glob": "**/*",
+          "input": "./src/assets",
+          "output": "/assets"
+        }
+      ],
+      "styles": [
+        "./src/assets/css/bootstrap.min.css",
+        "./src/assets/css/typography.css",
+        "./src/assets/css/style.css",
+        "./src/assets/css/responsive.css"
+      ],
+      "scripts": [
+        "./src/assets/js/jquery.min.js",
+        "./src/assets/js/popper.min.js",
+        "./src/assets/js/bootstrap.min.js",
+        "./src/assets/js/jquery.appear.js",
+        "./src/assets/js/countdown.min.js",
+        "./src/assets/js/waypoints.min.js",
+        "./src/assets/js/jquery.counterup.min.js",
+        "./src/assets/js/wow.min.js",
+        "./src/assets/js/apexcharts.js",
+        "./src/assets/js/slick.min.js",
+        "./src/assets/js/select2.min.js",
+        "./src/assets/js/owl.carousel.min.js",
+        "./src/assets/js/jquery.magnific-popup.min.js",
+        "./src/assets/js/smooth-scrollbar.js",
+        "./src/assets/js/lottie.js",
+        "./src/assets/js/core.js",
+        "./src/assets/js/charts.js",
+        "./src/assets/js/animated.js",
+        "./src/assets/js/kelly.js",
+        "./src/assets/js/worldLow.js",
+        "./src/assets/js/chart-custom.js",
+        "./src/assets/js/custom.js"
+      ],
+      "esbuild": {
+        "logLevel": "error" // Ignore les avertissements (warnings)
+      }
+    },
+    "configurations": {
+      "production": {
+        "budgets": [
+          {
+            "type": "initial",
+            "maximumWarning": "500kB",
+            "maximumError": "1MB"
+          },
+          {
+            "type": "anyComponentStyle",
+            "maximumWarning": "4kB",
+            "maximumError": "8kB"
+          }
+        ],
+        "outputHashing": "all"
+      },
+      "development": {
+        "optimization": false,
+        "extractLicenses": false,
+        "sourceMap": true
+      }
+    },
+    "defaultConfiguration": "production"
+  },
+  "serve": {
+    "builder": "@angular-devkit/build-angular:dev-server",
+    "configurations": {
+      "production": {
+        "buildTarget": "m1p12mean-sahy-miora-frontend:build:production"
+      },
+      "development": {
+        "buildTarget": "m1p12mean-sahy-miora-frontend:build:development"
+      }
+    },
+    "defaultConfiguration": "development"
+  },
+  "extract-i18n": {
+    "builder": "@angular-devkit/build-angular:extract-i18n"
+  },
+  "test": {
+    "builder": "@angular-devkit/build-angular:karma",
+    "options": {
+      "polyfills": [
+        "zone.js",
+        "zone.js/testing"
+      ],
+      "tsConfig": "tsconfig.spec.json",
+      "assets": [
+        {
+          "glob": "**/*",
+          "input": "public"
+        }
+      ],
+      "styles": [
+        "src/styles.css"
+      ],
+      "scripts": []
+    }
+  }
+}
+
+
+
+
+
+dans angular,j'ai import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ServiceService {
+  private apiUrl = 'http://localhost:5000/services';
+
+  constructor(private http: HttpClient) {}
+
+  // Récupérer tous les services
+  getServices(): Observable<any> {
+    return this.http.get<any>(this.apiUrl);
+  }
+
+  // Ajouter un service
+  addService(service: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, service);
+  }
+
+  // Ajouter une entrée dans l'historique d'un service
+  addHistorique(serviceId: string, historique: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${serviceId}/historique`, historique);
+  }
+}  dans le service ,import { Component, OnInit } from '@angular/core';
+import { ServiceService } from '../../services/service.service'
+@Component({
+  selector: 'app-services',
+  templateUrl: './services.component.html',
+  styleUrls: ['./services.component.css']
+})
+export class ServicesComponent implements OnInit {
+  services: any[] = [];
+
+  constructor(private serviceService: ServiceService) {}
+
+  ngOnInit(): void {
+    this.serviceService.getServices().subscribe(data => {
+      this.services = data;
+    });
+  }
+}  dans le component et  <form class="form-horizontal" action="/action_page.php">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalCenteredScrollableTitle">Ajouter un service</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">×</span>
+           </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group row">
+               <label class="control-label col-sm-4 align-self-center mb-0" for="email">Nom:</label>
+               <div class="col-sm-10">
+                  <input type="email" class="form-control" id="email">
+               </div>
+            </div>
+            <div class="form-group row">
+               <label class="control-label col-sm-4 align-self-center mb-0" for="pwd1">Description:</label>
+               <div class="col-sm-10">
+                  <input type="text" class="form-control">
+               </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+           <button type="button" class="btn btn-primary">Enregistrer</button>
+        </div>
+     </div>
+    </form> dans le html,veuillez me dire ce que je dois faire pour les faires communiquer pour ce add , que le formulaire soit en rappot avec tout le rest
+rajoutez ce qui manque
+ne me donnez que les parties a corriger
