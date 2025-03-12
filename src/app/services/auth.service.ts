@@ -19,6 +19,15 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  storeRole(role: string): void {
+    localStorage.setItem('role', role);
+  }
+
+  getRole(role:string):string | null {
+    return localStorage.getItem('role');
+  }
+
+
   logout(): void {
     localStorage.removeItem('token');
   }
@@ -35,7 +44,7 @@ export class AuthService {
   }
 
   registermecanicien(register:any) : Observable<any> {
-    const token = localStorage.getItem('token');
+    const token = this.getToken();
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
