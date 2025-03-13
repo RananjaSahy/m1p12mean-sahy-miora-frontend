@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
+import {jwtDecode} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +20,16 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  storeRole(role: string): void {
-    localStorage.setItem('role', role);
-  }
+  getUserRole(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
 
-  getRole(role:string):string | null {
-    return localStorage.getItem('role');
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.role || null;
+    } catch (error) {
+      return null;
+    }
   }
 
 
