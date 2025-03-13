@@ -1,17 +1,16 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-loginstaff',
   imports: [CommonModule, FormsModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './loginstaff.component.html',
+  styleUrl: './loginstaff.component.css'
 })
-export class LoginComponent{
-
+export class LoginstaffComponent {
   error = {msg:''};
   user = {email: '', mdp:''};
 
@@ -20,7 +19,7 @@ export class LoginComponent{
   loginUser():void{
     this.error.msg = '';
     if (this.user.email && this.user.mdp) {
-      this.authservice.loginclient(this.user).subscribe({
+      this.authservice.loginstaff(this.user).subscribe({
         next:(response) => {
           this.authservice.storeToken(response.token);
           this.router.navigate(['/']);
@@ -33,5 +32,4 @@ export class LoginComponent{
       this.error.msg = 'Veuillez remplir tous les champs.';
     }
   }
-  
 }
