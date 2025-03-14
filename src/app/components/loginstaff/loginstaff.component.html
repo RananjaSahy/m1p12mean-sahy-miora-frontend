@@ -1,0 +1,44 @@
+   <!-- Sign in Start -->
+   <section class="sign-in-page">
+     <div id="container-inside">
+         <div id="circle-small"></div>
+         <div id="circle-medium"></div>
+         <div id="circle-large"></div>
+         <div id="circle-xlarge"></div>
+         <div id="circle-xxlarge"></div>
+     </div>
+       <div class="container p-0">
+           <div class="row no-gutters">
+               <div class="col-md-6 text-center pt-5">
+                   <div class="sign-in-detail text-white">
+                       <a class="sign-in-logo mb-5" href="#"></a>
+                   </div>
+               </div>
+               <div class="col-md-6 bg-white pt-5">
+                   <div class="sign-in-from">
+                       <h1 class="mb-0">Connexion (Staff)</h1>
+                       <p>Veuillez entrer votre email et votre mot de passe</p>
+                        <div class="alert alert-danger"*ngIf="error.msg">
+                            {{ error.msg }}
+                          </div>
+                       <form class="mt-4" (ngSubmit)="loginUser()" >
+                           <div class="form-group">
+                               <label for="email">Email</label>
+                               <input type="email" class="form-control mb-0" id="email" name="mdp" placeholder="Entrez votre email" [(ngModel)]="user.email">
+                           </div>
+                           <div class="form-group">
+                               <label for="mdp">Mot de passe</label>
+                               <input type="password" class="form-control mb-0" id="mdp" name="mdp" placeholder="Password" [(ngModel)]="user.mdp">
+                           </div>
+                           <div class="d-inline-block w-100">
+                               <button type="submit" class="btn btn-primary float-right">Sign in</button>
+                           </div>
+                           <div class="sign-info">
+                            <span class="dark-color d-inline-block line-height-2">Etes-vous client? <a href="#">Login Staff</a></span>
+                        </div>
+                       </form>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </section>

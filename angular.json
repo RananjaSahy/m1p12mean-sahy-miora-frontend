@@ -1,5 +1,10 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "cache": {
+      "enabled": false
+    }
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -23,21 +28,48 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "./src/assets",
+                "output": "/assets"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "./src/assets/css/bootstrap.min.css",
+              "./src/assets/css/typography.css",
+              "./src/assets/css/style.css",
+              "./src/assets/css/responsive.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./src/assets/js/jquery.min.js",
+              "./src/assets/js/popper.min.js",
+              "./src/assets/js/bootstrap.min.js",
+              "./src/assets/js/jquery.appear.js",
+              "./src/assets/js/countdown.min.js",
+              "./src/assets/js/waypoints.min.js",
+              "./src/assets/js/jquery.counterup.min.js",
+              "./src/assets/js/wow.min.js",
+              "./src/assets/js/apexcharts.js",
+              "./src/assets/js/slick.min.js",
+              "./src/assets/js/select2.min.js",
+              "./src/assets/js/owl.carousel.min.js",
+              "./src/assets/js/jquery.magnific-popup.min.js",
+              "./src/assets/js/smooth-scrollbar.js",
+              "./src/assets/js/lottie.js",
+              "./src/assets/js/core.js",
+              "./src/assets/js/charts.js",
+              "./src/assets/js/animated.js",
+              "./src/assets/js/kelly.js",
+              "./src/assets/js/worldLow.js",
+              "./src/assets/js/chart-custom.js",
+              "./src/assets/js/custom.js"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2mb",
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
