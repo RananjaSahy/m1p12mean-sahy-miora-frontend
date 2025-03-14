@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://api.monsite.com',
+    apiUrl: 'm1p12mean-sahy-miora-backend-production.up.railway.app',
 };
