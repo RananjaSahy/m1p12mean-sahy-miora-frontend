@@ -1,20 +1,18 @@
-
 <div class="header-for-bg">
   <div class="background-header position-relative">
      <img src="./assets/images/background/profile-bg5.jpg" class="img-fluid rounded w-100 rounded rounded" alt="profile-bg">
      <div class="title-on-header">
         <div class="data-block">
-           <h2>Liste des services</h2>
+           <h2>Liste des services {{userRole}}</h2>
         </div>
      </div>
   </div>
 </div>
-
 <div id="content-page" class="content-page">
   <div class="container">
     <div class="row">
       <div class="row d-flex justify-content-end">
-        <button type="button" class="btn iq-bg-success" data-toggle="modal" data-target="#exampleModalCenteredScrollable">
+        <button type="button" class="btn iq-bg-dark" data-toggle="modal" data-target="#exampleModalCenteredScrollable">
           <i class="ri-add-line"></i> Ajouter un service
         </button>
       </div>
@@ -26,8 +24,8 @@
           <div class="iq-card-body">
             <div class="iq-badges text-left">
               <div class="badges-icon">
-                <!-- <img class="avatar-80 rounded" src="./assets/images/background/profile-bg5.jpg" alt=""> -->
-                <i class="ri-search-line text-primary" style="font-size: 3rem;"></i>
+                <!--  <img class="avatar-80 rounded" src="./assets/images/background/profile-bg5.jpg" alt=""> -->
+                <i class="fa fa-asterisk text-primary" style="font-size: 3rem;"></i>
               </div>
               <h5 class="mb-2">{{ service.nom }}</h5>
               <p>{{ service.description }}.</p>
@@ -36,19 +34,18 @@
                   <span class="text-uppercase">Ar {{ service.historique.length > 0 ? service.historique.at(-1).prix : 'Non disponible'  }}</span>
                 </div>
                 <div class="col-md-5">
-                  <button type="button" class="btn btn-primary mb-3"><i class="ri-add-line"></i>Ajouter</button>
-                </div>
+                                <!-- Si l'utilisateur est un client -->
+                <button *ngIf="userRole === 'client'" type="button" class="btn btn-primary mb-3">
+                  <i class="ri-add-line"></i> Réserver
+                </button>
 
+                <!-- Si l'utilisateur est un manager -->
+                <button *ngIf="userRole === 'manager'" class="btn btn-link mb-3"
+                  (click)="openUpdateModal(service)" data-toggle="modal" data-target="#updateServiceModal">
+                  <i class="ri-pencil-line"></i> Modifier
+                </button>
               </div>
-
-              <div class="p-image">
-                <i class="ri-pencil-line upload-button"></i>
-                <input class="file-upload" type="file" accept="image/*"/>
-             </div>
-             <div class="p-image">
-              <i class="ri-pencil-line upload-button"></i>
-              <input class="file-upload" type="file" accept="image/*"/>
-           </div>
+              </div>
             </div>
           </div>
         </div>
@@ -62,38 +59,101 @@
 <!-- modal content for adding a services -->
 <div id="exampleModalCenteredScrollable" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenteredScrollableTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
-    <form class="form-horizontal" action="/action_page.php">
-     <div class="modal-content">
+    <form class="form-horizontal">
+      <div class="modal-content">
         <div class="modal-header">
-           <h5 class="modal-title" id="exampleModalCenteredScrollableTitle">Ajouter un service</h5>
-           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">×</span>
-           </button>
+          <h5 class="modal-title">Ajouter un service</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
-        <div class="modal-body">
 
-            <div class="form-group row">
-               <label class="control-label col-sm-4 align-self-center mb-0" for="email">Nom:</label>
-               <div class="col-sm-10">
-                  <input type="email" class="form-control" id="email">
-               </div>
+        <div class="modal-body">
+          <!-- Nom -->
+          <div class="form-group row">
+            <label class="control-label col-sm-4 align-self-center mb-0" for="nom">Nom:</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="nom" [(ngModel)]="newService.nom" name="nom">
             </div>
-            <div class="form-group row">
-               <label class="control-label col-sm-4 align-self-center mb-0" for="pwd1">Description:</label>
-               <div class="col-sm-10">
-                  <input type="text" class="form-control">
-               </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group row">
+            <label class="control-label col-sm-4 align-self-center mb-0" for="description">Description:</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="description" [(ngModel)]="newService.description" name="description">
             </div>
+          </div>
+
+          <!-- Prix Historique -->
+          <div class="form-group row">
+            <label class="control-label col-sm-4 align-self-center mb-0" for="prix">Prix:
+            </label>
+            <div class="col-sm-8">
+              <input type="number" class="form-control" id="prix" [(ngModel)]="newService.historique[0].prix" name="prix">
+
+            </div>
+          </div>
         </div>
+
         <div class="modal-footer">
-           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-           <button type="button" class="btn btn-primary">Enregistrer</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="ajouterService()"  data-dismiss="modal">Enregistrer</button>
         </div>
-     </div>
+      </div>
     </form>
+
   </div>
 </div>
 
+
+
+<!-- Modal pour l'update du service -->
+<div id="updateServiceModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="updateServiceModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <form class="form-horizontal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier le service</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Nom -->
+          <div class="form-group row">
+            <label class="control-label col-sm-4 align-self-center mb-0" for="editNom">Nom:</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="editNom" [(ngModel)]="selectedService.nom" name="editNom">
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group row">
+            <label class="control-label col-sm-4 align-self-center mb-0" for="editDescription">Description:</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="editDescription" [(ngModel)]="selectedService.description" name="editDescription">
+            </div>
+          </div>
+
+          <!-- Prix Historique -->
+          <div class="form-group row">
+            <label class="control-label col-sm-4 align-self-center mb-0" for="editPrix">Prix:</label>
+            <div class="col-sm-8">
+              <input type="number" class="form-control" id="editPrix" [(ngModel)]="selectedService.historique.at(-1).prix" name="editPrix">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modifierService()"  data-dismiss="modal">Enregistrer</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 
 
