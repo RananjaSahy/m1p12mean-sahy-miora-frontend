@@ -30,7 +30,8 @@
                 "glob": "**/*",
                 "input": "./src/assets",
                 "output": "/assets"
-              }
+              },
+              "src/_redirects"
             ],
             "styles": [
               "./src/assets/css/bootstrap.min.css",
