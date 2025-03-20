@@ -1,19 +1,16 @@
   <div class="wrapper">
-    <!-- <div class="iq-sidebar">
+    <div class="iq-sidebar">
       <div id="sidebar-scrollbar">
         <nav class="iq-sidebar-menu">
           <ul id="iq-sidebar-toggle" class="iq-menu">
             <li>
-              <a href="index.html" class=" "><i class="las la-newspaper"></i><span>Newsfeed</span></a>
-            </li>
-            <li>
-              <a href="profile.html" class=" "><i class="las la-user"></i><span>Profile</span></a>
+              <a href="profile.html" class=" "><i class="las la-wrench"></i><span>Mécaniciens</span></a>
             </li>
           </ul>
         </nav>
         <div class="p-3"></div>
       </div>
-    </div> -->
+    </div>
     <!-- TOP Nav Bar -->
     <div class="iq-top-navbar">
       <div class="iq-navbar-custom">
@@ -60,8 +57,13 @@
                     <div class="iq-card shadow-none m-0">
                       <div class="iq-card-body p-0 ">
                         <div class="bg-primary p-3 line-height">
-                          <h5 class="mb-0 text-white line-height">Hello Bni Cyst</h5>
-                          <span class="text-white font-size-12">Available</span>
+                          @if (email) {
+                            <h5 class="mb-0 text-white line-height">{{email}}</h5>
+                            <span class="text-white font-size-12">Available</span>
+                          }
+                          @else {
+                            <h5 class="mb-0 text-white line-height">Veuillez vous connecter!</h5>
+                          }                          
                         </div>
                         <a href="profile.html" class="iq-sub-card iq-bg-primary-hover">
                           <div class="media align-items-center">
@@ -75,8 +77,15 @@
                           </div>
                         </a>
                         <div class="d-inline-block w-100 text-center p-3">
-                          <a class="bg-primary iq-sign-btn" href="#" (click)="logout()" role="button">Sign out<i
+                          @if (email) {
+                            <a class="bg-primary iq-sign-btn" href="/" (click)="logout()" role="button">Déconnexion<i
                               class="ri-login-box-line ml-2"></i></a>
+                          }
+                          @else {
+                            <a class="bg-primary iq-sign-btn" href="/" role="button">Se connecter<i
+                              class="ri-login-box-line ml-2"></i></a>
+                          }
+                          
                         </div>
                       </div>
                     </div>
