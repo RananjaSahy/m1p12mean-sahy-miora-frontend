@@ -7,6 +7,8 @@ import { LoginComponent } from './components/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginstaffComponent } from './components/loginstaff/loginstaff.component';
 import { RegisterComponent } from './components/register/register.component';
+import { MecaniciensComponent } from './components/mecaniciens/mecaniciens.component';
+import { TypevehiculesComponent } from './components/typevehicules/typevehicules.component';
 export const routes: Routes = [
     {
         path: '',
@@ -14,6 +16,8 @@ export const routes: Routes = [
         children: [
         // { path: 'services', component: ServicesComponent },
         { path: 'services', component: ServicesComponent, canActivate: [AuthGuard], data: { roles: ['mecanicien', 'manager','client'] } }, // Exemple Mecaniciens et Manager
+        { path: 'mecaniciens', component: MecaniciensComponent, canActivate: [AuthGuard], data: { roles : ['manager']} },
+        { path: 'typevehicules', component: TypevehiculesComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: '', redirectTo: 'services', pathMatch: 'full' },
         ],
     },
