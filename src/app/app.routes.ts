@@ -9,6 +9,7 @@ import { LoginstaffComponent } from './components/loginstaff/loginstaff.componen
 import { RegisterComponent } from './components/register/register.component';
 import { MecaniciensComponent } from './components/mecaniciens/mecaniciens.component';
 import { TypevehiculesComponent } from './components/typevehicules/typevehicules.component';
+import { MesvehiculesComponent } from './components/mesvehicules/mesvehicules.component';
 export const routes: Routes = [
     {
         path: '',
@@ -18,6 +19,7 @@ export const routes: Routes = [
         { path: 'services', component: ServicesComponent, canActivate: [AuthGuard], data: { roles: ['mecanicien', 'manager','client'] } }, // Exemple Mecaniciens et Manager
         { path: 'mecaniciens', component: MecaniciensComponent, canActivate: [AuthGuard], data: { roles : ['manager']} },
         { path: 'typevehicules', component: TypevehiculesComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
+        { path: 'mesvehicules', component: MesvehiculesComponent, canActivate: [AuthGuard], data: {roles : ['client']} },
         { path: '', redirectTo: 'services', pathMatch: 'full' },
         ],
     },

@@ -39,5 +39,25 @@ export class UtilisateursService {
     });
     return this.http.get<any>(`${this.apiUrl}/mecaniciens`, { headers , params });
   }
+
+  getMesvehicules(page: number = 1, limit?:number, search:string = ''): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString());
+
+    if (limit) {
+      params = params.set('limit', limit.toString());
+    }
+    if (search.trim()) {
+      params = params.set('search', search);
+    }
+    const token = this.authservice.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    
+    return this.http.get<any>(`${this.apiUrl}/mesvehicules`, { params, headers });
+  }
   
 }
