@@ -1,0 +1,136 @@
+<div id="content-page" class="content-page">
+   <div class="container">
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="iq-card position-relative inner-page-bg bg-primary" style="height: 150px;">
+               <div class="inner-page-title">
+                  <h3 class="text-white">Gestion des mécaniciens</h3>
+                  <p class="text-white"></p>
+               </div>
+            </div>
+         </div>
+         <div class="col-sm-12">
+            <div class="iq-card">
+               <div class="iq-card-header d-flex justify-content-between">
+                  <div class="iq-header-title">
+                     <h4 class="card-title">Liste des mécaniciens</h4>
+                  </div>
+               </div>
+               <div class="iq-card-body">
+                  <div id="table" class="table-editable">
+                     <span class="table-add float-right mb-3 mr-2">
+                        <button class="btn btn-sm iq-bg-success" data-toggle="modal" data-target="#post-modal" ><i
+                           class="ri-add-fill"><span class="pl-1">Ajouter</span></i>
+                        </button>
+                        </span>
+                     <div class="iq-search-bar">
+                        <form action="#" class="searchbox">
+                          <input type="text" class="text search-input" [(ngModel)]="searchTerm" name="searchTerm" (input)="onSearch()" placeholder="Rechercher...">
+                          <a class="search-link"><i class="ri-search-line"></i></a>
+                        </form>
+                      </div>
+                      <hr>
+                      @if (errormessage) {
+                        <div class="alert alert-danger" role="alert">
+                           <div class="iq-alert-text">{{errormessage}}</div>
+                        </div>
+                      }
+                     <table class="table table-bordered table-responsive-md table-striped text-center">
+                        <thead>
+                           <tr>
+                              <th>Nom</th>
+                              <th>Prenom</th>
+                              <th>Email</th>
+                              <!-- <th>Modifier</th> -->
+                           </tr>
+                        </thead>
+                        <tbody>
+                           @for (mecanicien of mecaniciens; track mecanicien._id) {
+                           <tr>
+                              <td>{{mecanicien.nom}}</td>
+                              <td>{{mecanicien.prenom}}</td>
+                              <td>{{mecanicien.email}}</td>
+                              <!-- <td>
+                                 <span class="table-editable"><button type="button"
+                                    class="btn iq-bg-info btn-rounded btn-sm my-0">Modifier</button></span>
+                              </td> -->
+                           </tr>
+                        }
+                        </tbody>
+                     </table>
+                     <!-- PAGINATION -->
+                     <nav *ngIf="totalMecaniciens > limit">
+                        <ul class="pagination">
+                           <li class="page-item" [class.disabled]="currentPage === 1">
+                              <a class="page-link" (click)="onPageChange(currentPage - 1)">Précédent</a>
+                           </li>
+                           <li class="page-item" *ngFor="let page of totalPages" [class.active]="currentPage === page">
+                              <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+                           </li>
+                           <li class="page-item" [class.disabled]="currentPage === totalPages.length">
+                              <a class="page-link" (click)="onPageChange(currentPage + 1)">Suivant</a>
+                           </li>
+                        </ul>
+                     </nav>
+                  </div>
+               </div>
+               <div class="modal fade" id="post-modal" tabindex="-1" role="dialog" aria-labelledby="post-modalLabel" aria-hidden="true" style="display: none;">
+                  <div class="modal-dialog" role="document">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h5 class="modal-title" id="post-modalLabel">Ajout mécanicien</h5>
+                           <button type="button" class="btn btn-secondary"  data-dismiss="modal" (click)="reinitialiserAlertAjout()"><i class="ri-close-fill m-0"></i></button>
+                        </div>
+                        <div class="modal-body">
+                           @if (successAjout) {
+                              <div class="alert alert-success" role="alert">
+                                 <div class="iq-alert-text">{{successAjout}}</div>
+                              </div>
+                           }
+                           @if (errorajout.msg) {
+                              <div class="alert alert-danger" role="alert">
+                                 <div class="iq-alert-text">{{errorajout.msg}}</div>
+                              </div>
+                           }
+                           <form (ngSubmit)="ajouterUser()">
+                              <div class="form-row">
+                                 <div class="form-row">
+                                    <div class="col-md-6 mb-3">
+                                       <label for="nom">Nom</label>
+                                       <input type="text" class="form-control" id="nom" name="nom" [(ngModel)]="user.nom" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                       <label for="prenom">Prénoms</label>
+                                       <input type="text" class="form-control" id="prenom" name="prenom" [(ngModel)]="user.prenom" required>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                       <label for="email">Email</label>
+                                       <div class="input-group">
+                                          <input type="email" class="form-control" id="email" name="email"  aria-describedby="email" [(ngModel)]="user.email" required>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                       <label for="mdp">Mot de passe</label>
+                                       <div class="input-group">
+                                          <input type="password" class="form-control" id="mdp" name="mdp"  aria-describedby="mdp" [(ngModel)]="user.mdp" required>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                       <label for="mdpconfirm">Confirmer le mot de passe</label>
+                                       <div class="input-group">
+                                          <input type="password" class="form-control" id="mdpconfirm" name="mdpconfirm"  aria-describedby="mdpconfirm" [(ngModel)]="user.mdpconfirm" required>
+                                       </div>
+                                    </div>
+                                 </div>
+                                    <button class="btn btn-primary d-block w-100 mt-3" type="submit">Ajouter</button>
+                              </div>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
