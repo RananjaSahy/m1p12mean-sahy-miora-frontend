@@ -1,0 +1,194 @@
+<div id="content-page" class="content-page">
+  <div class="container mt-2">
+    <div class="row">
+      <div class="col-lg-7 col-md-7">
+        <div class="card shadow p-4 w-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">Planning</h4>
+            <button class="btn btn-primary" (click)="toggleReservationForm()">
+              <i class="ri-add-line mr-2"></i> Faire une réservation
+            </button>
+          </div>
+          <div class="card-body">
+            <div id="calendar1" #calendarContainer class="border p-3 rounded bg-light w-100" style="min-height: 500px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-1"></div>
+      <!-- Colonne contenant le formulaire de réservation -->
+      <div class="col-lg-4 col-md-5">
+        <div *ngIf="showRendezvousList; else reservationForm">
+          <div class="card shadow-lg p-4">
+            <div class="card-header text-center bg-primary text-white">
+              <h4 class="card-title mb-0">Détails des rendez-vous du {{ selectedDateForDetails | date:'dd/MM/yyyy' }}</h4>
+            </div>
+            <div class="card-body">
+              <ul class="todo-task-lists m-0 p-0">
+                <li *ngFor="let rdv of rendezvousDuJour" class="d-flex align-items-center p-3">
+                  <div class="user-img img-fluid">
+                    <!-- <img src="images/user/01.jpg" alt="user-img" class="rounded-circle avatar-40"> -->
+                  </div>
+                  <div class="media-support-info ml-3">
+                    <h6 class="d-inline-block">{{ rdv.vehicule.libelle }}</h6>
+                    <span class="badge badge-warning ml-3 text-white">Planifié</span>
+                    <p class="mb-0">
+                      Services : {{ getServicesNoms(rdv) }}
+                    </p>
+                    <p class="mb-0">Commentaire : {{ rdv.commentaire }}</p>
+                  </div>
+                  <div class="iq-card-header-toolbar d-flex align-items-center">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" name="todo-check" class="custom-control-input" [id]="'check-' + rdv._id">
+                      <label class="custom-control-label" [for]="'check-' + rdv._id"></label>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <!-- <button class="btn btn-secondary mt-3" (click)="updateRendezVous()">
+                Modifier le rendez-vous -->
+              <!-- </button> -->
+              <button class="btn btn-secondary mt-3" (click)="showRendezvousList = false">
+                Retour au calendrier
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #reservationForm>
+          <div class="card shadow-lg p-4">
+            <div class="card-header text-center bg-primary text-white">
+              <h4 class="card-title mb-0">Réserver un rendez-vous</h4>
+            </div>
+            <div class="card-body">
+              <form action="#">
+                <div class="form-group">
+                  <label for="date"><strong>Date et heure:</strong></label>
+                  <input type="datetime-local" class="form-control" [(ngModel)]="selectedDate" name="selectedDate">
+                </div>
+                <div class="form-group">
+                  <label>Véhicule :</label>
+                  <select class="form-control" (change)="chargerServices($event);onVehiculeChange($event);">
+                    <option value="" disabled selected>Choisir un véhicule</option>
+                    <option *ngFor="let vehicule of vehiculesDisponibles" [value]="vehicule._id">
+                      {{ vehicule.libelle }} - {{ vehicule.matricule }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Service :</label>
+                  <select class="form-control" (change)="ajouterService($event)">
+                    <option value="" disabled selected>Choisir un service</option>
+                    <option *ngFor="let service of servicesDisponibles" [value]="service._id">
+                      {{ service.nom }} - {{ service.description }}
+                    </option>
+                  </select>
+                </div>
+                <div class="chips-container">
+                  <span *ngFor="let service of servicesSelectionnes" class="chip">
+                    {{ service.nom }}
+                    <span class="close-btn" (click)="retirerService(service._id)">✖</span>
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label for="email"><strong>Email :</strong></label>
+                  <input type="email" class="form-control form-control-lg" id="email" value={{userEmail}}>
+                  <strong>*Email utilisé pour envoyer la confirmation et les info sur votre réservation</strong>
+                </div>
+                <div class="form-group">
+                  <label for="">Remarques / Commentaires</label>
+                  <textarea class="form-control" [(ngModel)]="commentaire"></textarea>
+               </div>
+                <div class="form-group text-center">
+                  <button type="submit" class="btn btn-success btn-lg btn-block"
+                  (click)="reserver()">Réserver</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </ng-template>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<button id="openModalBtn" type="button" class="btn iq-bg-dark" data-toggle="modal" data-target="#detailmodal" hidden>
+  Ouvrir Modal
+</button>
+
+<!-- modal pour les détails du rendezvous -->
+<div
+class="modal fade" tabindex="-1" id="detailmodal"
+ role="dialog" aria-labelledby="exampleModalCenteredScrollableTitle"
+ aria-hidden="true">
+ <form action="#">
+ <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+  <div class="modal-content">
+  <div class="col-sm-12">
+    <div class=" modal-header">
+      <h5>Devis</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="table-responsive-sm">
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th class="text-center">Prix (Ar)</th>
+              <th class="text-center">Durée </th>
+              <th class="text-center">Cochez pour annuler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let service of rendezvousDetails?.details; let i = index">
+
+              <td>
+                <h6 class="mb-0 primary">{{ service.nom }}</h6>
+                <p class="mb-0">{{ service.description }}</p>
+              </td>
+              <td class="text-center">{{ formatPrix(service.prix)  }}</td>
+              <td class="text-center">{{ formatDuree(service.duree)  }}</td>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  [id]="service._id"
+                  [checked]="selectedServices[service._id] || false"
+                  (change)="toggleSelection(service._id, $event)" />
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" class="text-right"><b>Total</b></td>
+              <td class="text-center"><b>{{ formatPrix(rendezvousDetails?.totalPrix)  || 0 }} Ar</b></td>
+              <td class="text-center"><b>{{ formatDuree(rendezvousDetails?.totalDuree)  || 0 }} </b></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+     <div class="col-sm-12 mt-5">
+      <b class="text-danger">Notes:</b>
+      <p>Estimation basée sur les prix et réservations qui ont déja été effectuées jusqu'à ce jour.</p>
+   </div>
+    </div>
+  <div class="modal-footer">
+    <div class="col-sm-6 text-right">
+      <button type="button" class="btn btn-link mr-3"
+      data-dismiss="modal"><i class="ri-printer-line"></i>Annuler</button>
+      <button type="button" class="btn btn-primary"  data-dismiss="modal"
+        (click)="confirmRendezVous()"
+      >Réserver</button>
+   </div>
+  </div>
+</div>
+</div>
+</div>
+  </form>
+</div>
