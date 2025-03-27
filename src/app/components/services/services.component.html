@@ -223,7 +223,6 @@
             <tbody>
               <tr *ngFor="let historique of selectedService?.historique; let i = index">
                 <td>{{ historique.typevehicule }}</td>
-
                 <td [attr.contenteditable]="isManager ? 'true' : null">Ar {{ formatPrix(historique.prix) }}</td>
 
                 <td [attr.contenteditable]="isManager ? 'true' : null" (input)="onDureeChange($event, i)">
@@ -303,75 +302,6 @@
   </div>
 </div>
 
-<!-- details d'un service -->
-<!-- <div id="detailsService" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="detailsService" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Liste des tarifs - {{ selectedService?.nom }}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="table-responsive">
-          <table class="table table-bordered table-striped text-center">
-            <thead class="thead-dark">
-              <tr>
-                <th>Véhicules</th>
-                <th>Prix</th>
-                <th>Durée approximative</th>
-                <th>État</th>
-                <th>Action</th>
-                <th *ngIf="isManager"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let historique of selectedService?.historique; let i = index">
-                <td>
-                  {{ historique.typevehicule }}
-                </td>
-
-                <td [attr.contenteditable]="isManager ? 'true' : null">Ar {{ formatPrix(historique.prix) }}</td>
-
-                <td [attr.contenteditable]="isManager ? 'true' : null" (input)="onDureeChange($event, i)">
-                  {{ formatDuree(historique.duree) }}
-                </td>
-                <td>
-                  <span *ngIf="!historique.etat" class="badge badge-danger">Désactivé</span>
-                  <span *ngIf="historique.etat" class="badge badge-success">Actif</span>
-                </td>
-
-                <td>
-                  <button *ngIf="!isManager" type="button" class="btn btn-success btn-sm">
-                    Réserver
-                  </button>
-
-                  <button *ngIf="isManager" type="button" class="btn btn-primary btn-sm" (click)="savePriceChange(i)">
-                    Enregistrer
-                  </button>
-                </td>
-                  <td *ngIf="isManager">
-                  <button  type="button"
-                  [ngClass]="historique.etat ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm'"
-                  (click)="toggleHistorique(selectedService._id, historique._id, historique.etat)">
-                  {{ historique.etat ? 'Désactiver' : 'Activer' }}
-                </button>
-                  </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-      </div>
-    </div>
-  </div>
-</div> -->
-
 <div *ngIf="showSuccessAlert" class="alert text-white bg-secondary" role="alert">
   <div class="iq-alert-icon">
      <i class="ri-information-line"></i>
@@ -384,7 +314,7 @@
 
 
 <!-- Pagination stylée et centrée -->
-<div class="d-flex justify-content-center mt-3 mb-3">
+<div class="d-flex justify-content-center mt-3 mb-3" *ngIf="totalPages > 1">
   <nav>
     <ul class="pagination pagination-sm shadow-sm rounded">
       <!-- Bouton Précédent -->

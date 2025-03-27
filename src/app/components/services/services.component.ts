@@ -45,9 +45,16 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadServices();
-    this.typevehiculeService.getTypevehicule().subscribe((data: any[]) => {
-      this.type_vehicules = data;
+    this.typevehiculeService.getTypevehicule().subscribe((data: any) => {// Vérifie la structure dans la console
+
+      if (data && data.typevehicules) {
+        this.type_vehicules = data.typevehicules;
+      } else {
+        console.error("Erreur : données inattendues", data);
+        this.type_vehicules = []; // Évite une erreur d'affichage
+      }
     });
+
     console.log(this.type_vehicules);
     this.searchServices();
   }
@@ -292,7 +299,7 @@ export class ServicesComponent implements OnInit {
   }
   toggleHistorique(serviceId: string, historiqueId: string, currentEtat: boolean) {
     const newEtat = !currentEtat; // On inverse l'état actuel
-
+      alert(historiqueId);
     this.serviceService.toggleHistoriqueEtat(serviceId, historiqueId, newEtat).subscribe(
       (response) => {
         console.log(response.message);
@@ -304,6 +311,7 @@ export class ServicesComponent implements OnInit {
           }
           return h;
         });
+        console.log(this.selectedService.historique);
       },
       (error) => {
         console.error("Erreur lors du changement d'état de l'historique :", error);
@@ -311,18 +319,6 @@ export class ServicesComponent implements OnInit {
     );
   }
 
-  // enregistrerHistorique() {
-  //   if (this.selectedService && this.newHistorique.length > 0) {
-  //     try {
-  //        this.serviceService.addHistorique(this.selectedService._id, this.newHistorique);
-  //       alert('Historique ajouté avec succès');
-  //       this.newHistorique = []; // Réinitialiser après ajout
-  //     } catch (error) {
-  //       console.error("Erreur lors de l'ajout de l'historique :", error);
-  //       alert("Une erreur est survenue.");
-  //     }
-  //   }
-  // }
    // ajout histo pour un historique
    newHistorique: any[] = [];
 
@@ -345,7 +341,7 @@ export class ServicesComponent implements OnInit {
         historiqueToSend
       ).subscribe({
         next: () => {
-          alert('Historique ajouté avec succès');
+        // eto tokony asiana reload page 
           this.newHistorique = []; // Réinitialisez le tableau
         },
         error: (error) => {

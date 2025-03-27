@@ -36,7 +36,7 @@ export class  RendezvousService{
       return this.http.post(`${this.apiUrl}/ajouter`, rendezvousData,{ headers: this.getAuthHeaders() });
     }
     confirmerRendezvous(rendezvousData: any): Observable<any> {
-      return this.http.post(`${this.apiUrl}/comfirmer`, rendezvousData,{ headers: this.getAuthHeaders() });
+      return this.http.post(`${this.apiUrl}/confirmer`, rendezvousData,{ headers: this.getAuthHeaders() });
     }
     getRendezvousUtilisateur() {
 

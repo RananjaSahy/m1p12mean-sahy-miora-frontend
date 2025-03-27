@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -55,6 +55,7 @@ export class RendezvousComponent implements OnInit, AfterViewInit, OnDestroy {
   // partie modifier le rendez vous
 selectedServices: { [key: string]: boolean } = {}; // Stocke l'état des cases cochées
 rendezvousDetails: any = null; // Stocke les détails du rendez-vous
+  email: string = '';
 
   constructor(
     private serviceService: ServiceService,
@@ -66,6 +67,7 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
     this.userRole = this.authService.getUserRole();
     this.userEmail = this.authService.getUserEmail();
   }
+
 
   // affichage
     // partie affichage formattée début
@@ -89,7 +91,7 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
     this.rendezvousService.getVehicules().subscribe(
       (response) => {
         console.log(response);
-        this.vehiculesDisponibles = response; // Suppression de `.vehicules` si ce n'est pas nécessaire
+        this.vehiculesDisponibles = response.mesvehicules;
         this.cdr.detectChanges();
       },
       (error) => {
@@ -198,7 +200,8 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
       date: this.selectedDate,
       vehicule: this.selectedVehiculeId,
       services: this.servicesSelectionnes.map(s => s._id),
-      commentaire: this.commentaire
+      commentaire: this.commentaire,
+      email:this.email
     };
     // alert(JSON.stringify(rendezvousData, null, 2));
     this.rendezvousService.ajouterRendezvous(rendezvousData).subscribe(response => {
@@ -298,7 +301,8 @@ confirmRendezVous(): void {
     date: this.selectedDate,
     vehicule: this.selectedVehiculeId,
     services: servicesRestants.map((s: { _id: any; }) => s._id),
-    commentaire: this.commentaire
+    commentaire: this.commentaire,
+    email:this.email
   };
 
 

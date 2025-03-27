@@ -92,7 +92,10 @@
 
                 <div class="form-group">
                   <label for="email"><strong>Email :</strong></label>
-                  <input type="email" class="form-control form-control-lg" id="email" value={{userEmail}}>
+                  <input type="email" class="form-control form-control-lg" id="email"
+                  name="email"
+                  value={{userEmail}}
+                   [(ngModel)]="email">
                   <strong>*Email utilisé pour envoyer la confirmation et les info sur votre réservation</strong>
                 </div>
                 <div class="form-group">
