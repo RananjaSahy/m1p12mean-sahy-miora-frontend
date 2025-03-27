@@ -1,5 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,9 +14,7 @@ export class RegisterComponent {
   user = { nom: '', prenom: '', email: '', mdp: '', mdpconfirm: '' };
   success = '';
   constructor(
-    private authservice: AuthService,
-    private router: Router,
-    private cdRef: ChangeDetectorRef
+    private authservice: AuthService
   ) {}
 
   registerUser(): void {

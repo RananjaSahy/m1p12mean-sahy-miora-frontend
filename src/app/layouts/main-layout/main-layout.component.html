@@ -1,19 +1,26 @@
   <div class="wrapper">
-    <!-- <div class="iq-sidebar">
+    <div class="iq-sidebar">
       <div id="sidebar-scrollbar">
         <nav class="iq-sidebar-menu">
           <ul id="iq-sidebar-toggle" class="iq-menu">
-            <li>
-              <a href="index.html" class=" "><i class="las la-newspaper"></i><span>Newsfeed</span></a>
-            </li>
-            <li>
-              <a href="profile.html" class=" "><i class="las la-user"></i><span>Profile</span></a>
-            </li>
+            @if(userRole && userRole === 'manager'){
+              <li>
+                <a href="mecaniciens" class=" "><i class="las la-wrench"></i><span>Mécaniciens</span></a>
+              </li>
+              <li>
+                <a href="typevehicules" class=" "><i class="las la-cog"></i><span>Type véhicule</span></a>
+              </li>
+            }
+            @if(userRole && userRole === 'client'){
+              <li>
+                <a href="mesvehicules" class=" "><i class="las la-car"></i><span>Mes véhicules</span></a>
+              </li>
+            }
           </ul>
         </nav>
         <div class="p-3"></div>
       </div>
-    </div> -->
+    </div>
     <!-- TOP Nav Bar -->
     <div class="wrapper">
       <div class="iq-sidebar">
@@ -101,6 +108,26 @@
                                 <h6 class="mb-0 ">My Profile</h6>
                                 <p class="mb-0 font-size-12">View personal profile details.</p>
                               </div>
+                  <div class="iq-sub-dropdown iq-user-dropdown">
+                    <div class="iq-card shadow-none m-0">
+                      <div class="iq-card-body p-0 ">
+                        <div class="bg-primary p-3 line-height">
+                          @if (email) {
+                            <h5 class="mb-0 text-white line-height">{{email}}</h5>
+                            <span class="text-white font-size-12">Available</span>
+                          }
+                          @else {
+                            <h5 class="mb-0 text-white line-height">Veuillez vous connecter!</h5>
+                          }                          
+                        </div>
+                        <a href="profile.html" class="iq-sub-card iq-bg-primary-hover">
+                          <div class="media align-items-center">
+                            <div class="rounded iq-card-icon iq-bg-primary">
+                              <i class="ri-file-user-line"></i>
+                            </div>
+                            <div class="media-body ml-3">
+                              <h6 class="mb-0 ">My Profile</h6>
+                              <p class="mb-0 font-size-12">View personal profile details.</p>
                             </div>
                           </a>
                           <div class="d-inline-block w-100 text-center p-3">

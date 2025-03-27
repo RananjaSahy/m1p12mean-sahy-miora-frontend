@@ -53,6 +53,17 @@ export class AuthService {
     }
   }
 
+  getEmail(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.email || null;
+    } catch (error) {
+      return null;
+    }
+  }
 
   logout(): void {
     localStorage.removeItem('token');
