@@ -1,0 +1,14 @@
+.rotating-icon {
+  display: inline-block;
+  font-size: 3rem;
+  animation: slowRotate 4s linear infinite;
+}
+
+@keyframes slowRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

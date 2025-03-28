@@ -7,6 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginstaffComponent } from './components/loginstaff/loginstaff.component';
 import { RegisterComponent } from './components/register/register.component';
+import { RendezvousComponent } from './components/rendezvous/rendezvous.component';
 import { MecaniciensComponent } from './components/mecaniciens/mecaniciens.component';
 import { TypevehiculesComponent } from './components/typevehicules/typevehicules.component';
 import { MesvehiculesComponent } from './components/mesvehicules/mesvehicules.component';
@@ -17,6 +18,7 @@ export const routes: Routes = [
         children: [
         // { path: 'services', component: ServicesComponent },
         { path: 'services', component: ServicesComponent, canActivate: [AuthGuard], data: { roles: ['mecanicien', 'manager','client'] } }, // Exemple Mecaniciens et Manager
+        { path: 'rendezvous', component: RendezvousComponent, canActivate: [AuthGuard], data: { roles: ['client'] } },
         { path: 'mecaniciens', component: MecaniciensComponent, canActivate: [AuthGuard], data: { roles : ['manager']} },
         { path: 'typevehicules', component: TypevehiculesComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: 'mesvehicules', component: MesvehiculesComponent, canActivate: [AuthGuard], data: {roles : ['client']} },

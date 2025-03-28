@@ -11,7 +11,7 @@ export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
   private apiUrlStaff = `${environment.apiUrl}/authstaff`
   constructor(private http: HttpClient) {}
-  
+
   storeToken(token: string): void {
     localStorage.setItem('token', token);
   }
@@ -19,7 +19,28 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
+  getUserEmail(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
 
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.email || null; // Assurez-vous que le token contient bien 'email'
+    } catch (error) {
+      return null;
+    }
+  }
+  getEmail(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.email || null; // Assurez-vous que le token contient bien 'email'
+    } catch (error) {
+      return null;
+    }
+  }
   getUserRole(): string | null {
     const token = this.getToken();
     if (!token) return null;
@@ -61,12 +82,11 @@ export class AuthService {
 
   registermecanicien(register:any) : Observable<any> {
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    
+
     return this.http.post(`${this.apiUrlStaff}/register-mecanicien`,register,{headers});
   }
 }

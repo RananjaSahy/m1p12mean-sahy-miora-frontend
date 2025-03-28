@@ -1086,3 +1086,65 @@ li.checkout-product:last-child { margin-bottom: 5px; border-bottom: none; paddin
 #quantity { display: inline-block; width: 30px; height: 28px; border: 1px solid var(--iq-border-light); text-align: center; }
 button.qty-btn { border: 1px solid var(--iq-border-light); background: var(--iq-white); height: 28px; width: 30px; vertical-align: top; }
 .form-add-btn { margin-bottom: 20px; }
+
+
+/* Styles pour la landing page */
+.iq-icon {
+  font-size: 3rem;
+  color: #007bff;
+  margin-bottom: 1rem;
+}
+
+.iq-card {
+  transition: transform 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.iq-card:hover {
+  transform: translateY(-10px);
+}
+
+.iq-icon-placeholder {
+  width: 100px;
+  height: 100px;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+}
+
+.btn-block {
+  margin-top: 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+
+.rotating-icon {
+  display: inline-block;
+  font-size: 3rem;
+  animation: slowRotate 4s linear infinite;
+}
+
+@keyframes slowRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
