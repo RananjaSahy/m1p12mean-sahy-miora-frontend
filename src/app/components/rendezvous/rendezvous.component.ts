@@ -56,6 +56,7 @@ export class RendezvousComponent implements OnInit, AfterViewInit, OnDestroy {
 selectedServices: { [key: string]: boolean } = {}; // Stocke l'état des cases cochées
 rendezvousDetails: any = null; // Stocke les détails du rendez-vous
   email: string = '';
+  totalRdvPourLaDate: number =0;
 
   constructor(
     private serviceService: ServiceService,
@@ -85,6 +86,7 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
   ngOnInit(): void {
     this.getVehicules();
     this.getRendezvousUtilisateur();
+    this.userEmail = this.authService.getUserEmail();
     console.log(this.detail);
   }
   getVehicules(): void {
@@ -112,7 +114,11 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
     }
   }
 
+
   initCalendar(): void {
+    if (this.calendar) {
+      this.calendar.destroy();
+    }
     if (this.calendarContainer?.nativeElement && !this.calendar) {
       this.calendar = new Calendar(this.calendarContainer.nativeElement, {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
@@ -123,12 +129,6 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
-        events: [
-          { title: 'All Day Event', start: '2024-03-01', color: '#fc9919' },
-          { title: 'Long Event', start: '2024-03-07', end: '2024-03-10', color: '#ffc107' },
-          { title: 'Meeting', start: '2024-03-12T10:30:00', end: '2024-03-12T12:30:00', color: '#827af3' },
-          { title: 'Birthday Party', start: '2024-03-28T07:00:00', color: '#28a745' }
-        ]
       });
       this.calendar.render();
     }
@@ -234,39 +234,76 @@ getRendezvousUtilisateur(): void {
     }
   );
 }
+getEventColor(date: string | Date): string {
+  const rdvDate = new Date(date);
+  const today = new Date();
+
+  // Supprime l'heure pour comparer uniquement la date
+  today.setHours(0, 0, 0, 0);
+  rdvDate.setHours(0, 0, 0, 0);
+
+  if (rdvDate < today) {
+    return 'event-past';  // Classe CSS pour les événements passés
+  } else if (rdvDate.getTime() === today.getTime()) {
+    return 'event-today';  // Classe CSS pour les événements d'aujourd'hui
+  } else {
+    return 'event-future';  // Classe CSS pour les événements futurs
+  }
+}
+
 updateCalendarEvents(): void {
   if (this.calendar) {
     this.calendar.removeAllEvents();
-    console.log(this.rendezvousUtilisateur);
     this.rendezvousUtilisateur.forEach(rdv => {
       this.calendar.addEvent({
-        title: `Pour ${rdv.vehicule.libelle} - ${rdv.services.map((s: { nom: any; }) => s.nom).join(", ")}`,
+        title: `${rdv.vehicule.libelle}`,
         start: rdv.date,
-        color: '#007bff',
+        classNames: [this.getEventColor(rdv.date)],
+        eventColor:"green",
         extendedProps: { rdv } // Stocke les détails du rendez-vous
       });
     });
-
     // Gérer le clic sur un événement
-    this.calendar.on('eventClick', (info: { event: { extendedProps: { rdv: any; }; }; }) => {
+    this.calendar.on("eventClick", (info: { event: { extendedProps: { rdv: any; }; }; }) => {
       const selectedRdv = info.event.extendedProps.rdv;
-      this.afficherRendezvousDuJour(selectedRdv.date);
+      this.afficherRendezvousDuJour(selectedRdv);
     });
   }
 }
+
+
 // getServicesNoms(rdv: any): string {
 //   return rdv.services.map((s: { nom: string }) => s.nom).join("et  ");
 // }
 getServicesNoms(rdv: any): string {
-  return rdv.services.map((s: { nom: any; prixEstime: any; dureeEstimee: any; }) => `${s.nom} (${s.prixEstime || 'N/A'} Ar, ${s.dureeEstimee || 'N/A'} min)`).join(', ');
+  // Vérifier que `rdv.services` est défini et contient des services
+  console.log("services = ",rdv)
+  if (rdv.services && rdv.services.length > 0) {
+    return rdv.services.map((s: { nom: string; prixEstime: any; dureeEstimee: any; }) => {
+      // Si prixEstime et dureeEstimee sont définis, on les affiche, sinon on affiche 'N/A'
+      const prix = s.prixEstime ? `${s.prixEstime} Ar` : 'N/A';
+      const duree = s.dureeEstimee ? `${s.dureeEstimee} min` : 'N/A';
+      return `${s.nom} (${prix}, ${duree})`;
+    }).join(', '); // Joindre tous les services avec une virgule
+  }
+  return 'Aucun service disponible'; // Cas où il n'y a pas de services
 }
 
+
 afficherRendezvousDuJour(date: string): void {
+  console.log("hereee");
+  console.log(date);
   this.selectedDateForDetails = date;
+
+  // Récupérer tous les rendez-vous qui correspondent à cette date, peu importe l'heure
   this.rendezvousDuJour = this.rendezvousUtilisateur.filter(rdv =>
     new Date(rdv.date).toDateString() === new Date(date).toDateString()
   );
-  this.showRendezvousList = true; // Afficher la liste au lieu du formulaire
+
+  // Afficher le nombre total de rendez-vous pour cette date
+  this.totalRdvPourLaDate = this.rendezvousDuJour.length;
+
+  this.showRendezvousList = true; // Afficher la liste des rendez-vous
 }
 
 
@@ -280,6 +317,7 @@ toggleSelection(serviceId: string, event: Event): void {
 }
 
 confirmRendezVous(): void {
+
   if (!this.rendezvousDetails || !this.rendezvousDetails.details) {
     console.error("Aucun détail de rendez-vous disponible !");
     return;
@@ -292,7 +330,7 @@ confirmRendezVous(): void {
 
 
   if (servicesRestants.length === 0) {
-    console.warn("⚠ Tous les services ont été supprimés, annulation de l'envoi.");
+    console.warn("Tous les services ont été supprimés, annulation de l'envoi.");
     return;
   }
 
@@ -304,8 +342,7 @@ confirmRendezVous(): void {
     commentaire: this.commentaire,
     email:this.email
   };
-
-
+  alert(JSON.stringify(rendezvousData,null,2));
   // Envoyer les services restants
   this.rendezvousService.confirmerRendezvous(rendezvousData).subscribe(
     response => {

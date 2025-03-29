@@ -80,7 +80,7 @@ getServices(page: number = 1, limit: number = 10): Observable<any> {
     if (filters.typevehicule) params.typevehicule = filters.typevehicule;
     if (filters.prixMin) params.prixMin = filters.prixMin;
     if (filters.prixMax) params.prixMax = filters.prixMax;
-
+    if(filters.limit) params.limit = filters.limit;
     return this.http.get<any>(`${this.apiUrl}/search`, {
       headers: this.getAuthHeaders(),
       params

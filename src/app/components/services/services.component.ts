@@ -128,10 +128,8 @@ export class ServicesComponent implements OnInit {
       return;
     }
 
-    // ✅ Stocker en minutes pour éviter les erreurs de format
     this.selectedService.historique[index].duree = convertedMinutes;
 
-    // ✅ Forcer Angular à ne pas re-render tout de suite (éviter le reset du curseur)
     setTimeout(() => {
       if (cursorPosition !== null) {
         const range = document.createRange();
@@ -428,7 +426,8 @@ getTypeVehiculeLibelle(typevehiculeId: string): string {
     service: '',
     typevehicule: '',
     prixMin: null,
-    prixMax: null
+    prixMax: null,
+    limit: this.itemsPerPage
   };
   searchServices() {
     this.serviceService.searchServices(this.filters).subscribe({

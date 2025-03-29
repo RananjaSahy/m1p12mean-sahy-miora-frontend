@@ -35,13 +35,51 @@
 
 /* Permet à la ligne d’occuper toute la largeur disponible */
 .row {
-  width: 100%;
-  margin: 0; /* Supprime les marges inutiles */
+  width: 90%;
+  margin: 0;
 }
 
 /* Assure que les colonnes ne sont pas trop centrées */
 .container {
-  max-width: 100%; /* Évite qu'elle soit trop étroite */
-  padding: 0 20px; /* Ajoute un peu d’espace sur les côtés */
+  max-width: 100%;
+  padding: 0 20px;
 }
 
+
+
+::ng-deep .fc-event {
+  color: white !important;  /* Assurez-vous que le texte soit lisible */
+  border-radius: 4px;       /* Vous pouvez appliquer des bordures arrondies si nécessaire */
+}
+
+/* Classe pour les événements passés */
+::ng-deep .fc-event.event-past {
+  background-color: gray !important;
+  border-color: gray !important;
+}
+
+/* Classe pour les événements d'aujourd'hui */
+::ng-deep .fc-event.event-today {
+  background-color: blue !important;
+  border-color: blue !important;
+}
+
+/* Classe pour les événements futurs */
+::ng-deep .fc-event.event-future {
+  background-color: green !important;
+  border-color: green !important;
+}
+
+
+
+/* partie formulaire */
+.modification{
+  margin-left: 15%;
+}
+.modif{
+  margin-left: 15%;
+  width: 100%;
+}
+.modifss{
+  height: 50%;
+}
