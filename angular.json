@@ -34,10 +34,15 @@
               "src/_redirects"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/azure-blue.css",
               "./src/assets/css/bootstrap.min.css",
               "./src/assets/css/typography.css",
               "./src/assets/css/style.css",
-              "./src/assets/css/responsive.css"
+              "./src/assets/css/responsive.css",
+              "./src/assets/fullcalendar/core/main.css",
+              "./src/assets/fullcalendar/daygrid/main.css",
+              "./src/assets/fullcalendar/timegrid/main.css",
+              "./src/assets/fullcalendar/list/main.css"
             ],
             "scripts": [
               "./src/assets/js/jquery.min.js",
@@ -61,7 +66,11 @@
               "./src/assets/js/kelly.js",
               "./src/assets/js/worldLow.js",
               "./src/assets/js/chart-custom.js",
-              "./src/assets/js/custom.js"
+              "./src/assets/js/custom.js",
+              "./src/assets/fullcalendar/core/main.js",
+              "./src/assets/fullcalendar/daygrid/main.js",
+              "./src/assets/fullcalendar/timegrid/main.js",
+              "./src/assets/fullcalendar/list/main.js"
             ]
           },
           "configurations": {
@@ -69,8 +78,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "4mb"
+                  "maximumWarning": "7mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -118,6 +127,7 @@
               }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ],
             "scripts": []

@@ -10,8 +10,10 @@ import { AuthService } from '../../services/auth.service';
 })
 export class MainLayoutComponent implements OnInit{
   userRole: string | null = '';
+  email: string | null = '';
   constructor(private authService: AuthService) {
       this.userRole = this.authService.getUserRole();
+      this.email = this.authService.getEmail();
     }
     ngOnInit(): void {
     }

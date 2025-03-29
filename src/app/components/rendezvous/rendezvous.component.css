@@ -1,0 +1,47 @@
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Espacement entre les chips */
+  margin-top: 10px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  background-color: #007bff; /* Bleu Bootstrap */
+  width: 60%;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px; /* Coins arrondis */
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  margin-left: 10px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  padding: 3px 6px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Permet à la ligne d’occuper toute la largeur disponible */
+.row {
+  width: 100%;
+  margin: 0; /* Supprime les marges inutiles */
+}
+
+/* Assure que les colonnes ne sont pas trop centrées */
+.container {
+  max-width: 100%; /* Évite qu'elle soit trop étroite */
+  padding: 0 20px; /* Ajoute un peu d’espace sur les côtés */
+}
+
