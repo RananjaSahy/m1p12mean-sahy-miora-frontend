@@ -74,63 +74,64 @@
                      </nav>
                   </div>
                </div>
-               <div class="modal fade" id="post-modal" tabindex="-1" role="dialog" aria-labelledby="post-modalLabel" aria-hidden="true" style="display: none;">
-                  <div class="modal-dialog" role="document">
-                     <div class="modal-content">
-                        <div class="modal-header">
-                           <h5 class="modal-title" id="post-modalLabel">Ajout mécanicien</h5>
-                           <button type="button" class="btn btn-secondary"  data-dismiss="modal" (click)="reinitialiserAlertAjout()"><i class="ri-close-fill m-0"></i></button>
-                        </div>
-                        <div class="modal-body">
-                           @if (successAjout) {
-                              <div class="alert alert-success" role="alert">
-                                 <div class="iq-alert-text">{{successAjout}}</div>
-                              </div>
-                           }
-                           @if (errorajout.msg) {
-                              <div class="alert alert-danger" role="alert">
-                                 <div class="iq-alert-text">{{errorajout.msg}}</div>
-                              </div>
-                           }
-                           <form (ngSubmit)="ajouterUser()">
-                              <div class="form-row">
-                                 <div class="form-row">
-                                    <div class="col-md-6 mb-3">
-                                       <label for="nom">Nom</label>
-                                       <input type="text" class="form-control" id="nom" name="nom" [(ngModel)]="user.nom" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                       <label for="prenom">Prénoms</label>
-                                       <input type="text" class="form-control" id="prenom" name="prenom" [(ngModel)]="user.prenom" required>
-                                    </div>
-                                    <div class="col-md-12 mb-3">
-                                       <label for="email">Email</label>
-                                       <div class="input-group">
-                                          <input type="email" class="form-control" id="email" name="email"  aria-describedby="email" [(ngModel)]="user.email" required>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-12 mb-3">
-                                       <label for="mdp">Mot de passe</label>
-                                       <div class="input-group">
-                                          <input type="password" class="form-control" id="mdp" name="mdp"  aria-describedby="mdp" [(ngModel)]="user.mdp" required>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-12 mb-3">
-                                       <label for="mdpconfirm">Confirmer le mot de passe</label>
-                                       <div class="input-group">
-                                          <input type="password" class="form-control" id="mdpconfirm" name="mdpconfirm"  aria-describedby="mdpconfirm" [(ngModel)]="user.mdpconfirm" required>
-                                       </div>
-                                    </div>
-                                 </div>
-                                    <button class="btn btn-primary d-block w-100 mt-3" type="submit">Ajouter</button>
-                              </div>
-                           </form>
-                        </div>
-                     </div>
-                  </div>
-               </div>
             </div>
          </div>
       </div>
    </div>
+</div>
+
+<div class="modal fade" id="post-modal" tabindex="-1" role="dialog" aria-labelledby="post-modalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="post-modalLabel">Ajout mécanicien</h5>
+           <button type="button" class="btn btn-secondary"  data-dismiss="modal" (click)="reinitialiserAlertAjout()"><i class="ri-close-fill m-0"></i></button>
+        </div>
+        <div class="modal-body">
+           @if (successAjout) {
+              <div class="alert alert-success" role="alert">
+                 <div class="iq-alert-text">{{successAjout}}</div>
+              </div>
+           }
+           @if (errorajout.msg) {
+              <div class="alert alert-danger" role="alert">
+                 <div class="iq-alert-text">{{errorajout.msg}}</div>
+              </div>
+           }
+           <form (ngSubmit)="ajouterUser()">
+              <div class="form-row">
+                 <div class="form-row">
+                    <div class="col-md-6 mb-3">
+                       <label for="nom">Nom</label>
+                       <input type="text" class="form-control" id="nom" name="nom" [(ngModel)]="user.nom" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                       <label for="prenom">Prénoms</label>
+                       <input type="text" class="form-control" id="prenom" name="prenom" [(ngModel)]="user.prenom" required>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                       <label for="email">Email</label>
+                       <div class="input-group">
+                          <input type="email" class="form-control" id="email" name="email"  aria-describedby="email" [(ngModel)]="user.email" required>
+                       </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                       <label for="mdp">Mot de passe</label>
+                       <div class="input-group">
+                          <input type="password" class="form-control" id="mdp" name="mdp"  aria-describedby="mdp" [(ngModel)]="user.mdp" required>
+                       </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                       <label for="mdpconfirm">Confirmer le mot de passe</label>
+                       <div class="input-group">
+                          <input type="password" class="form-control" id="mdpconfirm" name="mdpconfirm"  aria-describedby="mdpconfirm" [(ngModel)]="user.mdpconfirm" required>
+                       </div>
+                    </div>
+                 </div>
+                    <button class="btn btn-primary d-block w-100 mt-3" type="submit">Ajouter</button>
+              </div>
+           </form>
+        </div>
+     </div>
+  </div>
 </div>

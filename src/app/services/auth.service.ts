@@ -30,17 +30,6 @@ export class AuthService {
       return null;
     }
   }
-  getEmail(): string | null {
-    const token = this.getToken();
-    if (!token) return null;
-
-    try {
-      const decoded: any = jwtDecode(token);
-      return decoded.email || null; // Assurez-vous que le token contient bien 'email'
-    } catch (error) {
-      return null;
-    }
-  }
   getUserRole(): string | null {
     const token = this.getToken();
     if (!token) return null;

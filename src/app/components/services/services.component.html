@@ -33,6 +33,9 @@
       </div>
       <div class="col-sm-12">
       </div>
+      <div *ngIf="services?.length === 0" class="col-12 text-center mt-5">
+        <p>Aucun résultat disponible</p>
+      </div>
       @for (service of services; track service._id) {
         <div class="col-lg-4 mt-5">
           <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
@@ -50,7 +53,7 @@
 
                 <h5 class="mb-2">{{ service.nom }}</h5>
                 <p>{{ service.description }}.</p>
-
+                <p *ngIf="service.etat">Disponible actuellement pour  {{ service.typevehicules }}</p>
                 <div class="row">
                   <div class="col-md-8">
                     <button (click)="openServiceModal(service)"
@@ -64,8 +67,15 @@
                       (click)="openUpdateModal(service)" data-toggle="modal" data-target="#historiqueServiceModal">
                       <i class="ri-time-line"></i> Historique des prix
                     </button>
-                    <button *ngIf="userRole === 'manager' && service.etat" class="btn btn-link mb-3 btn-danger-text" (click)="desactiverService(service._id)">
+                    <button *ngIf="userRole === 'manager' && service.etat"
+                    style="color: red;"
+                    class="btn btn-link mb-3" (click)="desactiverService(service._id)">
                       Désactiver
+                    </button>
+                    <button *ngIf="userRole === 'manager' && !service.etat"
+                    style="color: green;"
+                    class="btn btn-link mb-3" (click)="activerService(service._id)">
+                      Activer
                     </button>
                   </div>
                 </div>
@@ -196,6 +206,7 @@
   </div>
 </div>
 
+
 <div id="detailsService" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="detailsService" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
@@ -215,40 +226,46 @@
                 <th>Véhicules</th>
                 <th>Prix</th>
                 <th>Durée approximative</th>
-                <th>État</th>
-                <th>Action</th>
+                <th *ngIf="isManager">État</th>
+                <th *ngIf="isManager">Action</th>
                 <th *ngIf="isManager"></th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let historique of selectedService?.historique; let i = index">
-                <td>{{ historique.typevehicule }}</td>
-                <td [attr.contenteditable]="isManager ? 'true' : null">Ar {{ formatPrix(historique.prix) }}</td>
+              <ng-container *ngFor="let historique of selectedService?.historique; let i = index">
+                <!-- Filtre pour afficher uniquement les derniers historiques actifs ou inactifs -->
+                <tr *ngIf="isManager || historique.etat">
+                  <td>{{ historique.typevehicule }}</td>
+                  <td [attr.contenteditable]="isManager ? 'true' : null">Ar {{ formatPrix(historique.prix) }}</td>
 
-                <td [attr.contenteditable]="isManager ? 'true' : null" (input)="onDureeChange($event, i)">
-                  {{ formatDuree(historique.duree) }}
-                </td>
+                  <td [attr.contenteditable]="isManager ? 'true' : null" (input)="onDureeChange($event, i)">
+                    {{ formatDuree(historique.duree) }}
+                  </td>
 
-                <td>
-                  <span *ngIf="!historique.etat" class="badge badge-danger">Désactivé</span>
-                  <span *ngIf="historique.etat" class="badge badge-success">Actif</span>
-                </td>
+                  <!-- Affiche "Actif" seulement si l'utilisateur est un manager -->
+                  <td *ngIf="isManager">
+                    <span *ngIf="historique.etat" class="badge badge-success">Actif</span>
+                    <span *ngIf="!historique.etat" class="badge badge-danger">Désactivé</span>
+                  </td>
 
-                <td>
-                  <button *ngIf="!isManager" type="button" class="btn btn-success btn-sm">Réserver</button>
-                  <button *ngIf="isManager" type="button" class="btn btn-primary btn-sm" (click)="savePriceChange(i)">
-                    Enregistrer
-                  </button>
-                </td>
+                  <td>
+                    <!-- Bouton pour enregistrer les modifications de prix si c'est un manager -->
+                    <button *ngIf="isManager && historique.etat" type="button" class="btn btn-primary btn-sm" (click)="savePriceChange(i)">
+                      Enregistrer
+                    </button>
+                  </td>
 
-                <td *ngIf="isManager">
-                  <button type="button"
-                          [ngClass]="historique.etat ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm'"
-                          (click)="toggleHistorique(selectedService._id, historique._id, historique.etat)">
-                    {{ historique.etat ? 'Désactiver' : 'Activer' }}
-                  </button>
-                </td>
-              </tr>
+                  <td *ngIf="isManager">
+                    <!-- Affiche le bouton "Désactiver" seulement si l'historique est actif ou si c'est le dernier inactif pour ce type de véhicule -->
+                    <button *ngIf="historique.etat || !hasActiveForType(historique.typevehicule)"
+                      type="button" class="btn btn-warning btn-sm"
+                      (click)="toggleHistorique(selectedService._id, historique._id, historique.etat)">
+                      {{ historique.etat ? 'Désactiver' : 'Activer' }}
+                    </button>
+                  </td>
+                </tr>
+              </ng-container>
+
             </tbody>
           </table>
         </div>

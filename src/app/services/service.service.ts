@@ -56,6 +56,10 @@ getServices(page: number = 1, limit: number = 10): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${serviceId}/desactiver`, {}, { headers: this.getAuthHeaders() });
 
   }
+  activerService(serviceId: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${serviceId}/activer`, {}, { headers: this.getAuthHeaders() });
+
+  }
 
   // Désactiver un historique spécifique
   desactiverHistorique(serviceId: string, historiqueId: string): Observable<any> {
