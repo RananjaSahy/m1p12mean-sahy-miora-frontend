@@ -1,0 +1,106 @@
+
+<div id="detailsService" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="detailsService" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Liste des tarifs - {{ selectedService?.nom }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Table des historiques -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped text-center">
+            <thead class="thead-dark">
+              <tr>
+                <th>Véhicules</th>
+                <th>Prix</th>
+                <th>Durée approximative</th>
+                <th>État</th>
+                <th>Action</th>
+                <th *ngIf="isManager"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let historique of selectedService?.historique; let i = index">
+                <td>{{ historique.typevehicule }}</td>
+                <td [attr.contenteditable]="isManager ? 'true' : null">Ar {{ formatPrix(historique.prix) }}</td>
+
+                <td [attr.contenteditable]="isManager ? 'true' : null" (input)="onDureeChange($event, i)">
+                  {{ formatDuree(historique.duree) }}
+                </td>
+
+                <td>
+                  <span *ngIf="!historique.etat" class="badge badge-danger">Désactivé</span>
+                  <span *ngIf="historique.etat" class="badge badge-success">Actif</span>
+                </td>
+
+                <td>
+                  <button *ngIf="!isManager" type="button" class="btn btn-success btn-sm">Réserver</button>
+                  <button *ngIf="isManager" type="button" class="btn btn-primary btn-sm" (click)="savePriceChange(i)">
+                    Enregistrer
+                  </button>
+                </td>
+
+                <td *ngIf="isManager">
+                  <button type="button"
+                          [ngClass]="historique.etat ? 'btn btn-warning btn-sm' : 'btn btn-success btn-sm'"
+                          (click)="toggleHistorique(selectedService._id, historique._id, historique.etat)">
+                    {{ historique.etat ? 'Désactiver' : 'Activer' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Formulaire d'ajout d'historique pour le manager -->
+        <div *ngIf="isManager">
+          <h5 class="mt-4">Ajouter pour un type véhicule</h5>
+          <div *ngFor="let item of newHistorique; let i = index" class="form-group row align-items-center">
+            <!-- Type de véhicule -->
+            <div class="col-md-5">
+              <label>Type de véhicule:</label>
+              <select class="form-control" [(ngModel)]="item.typevehicule">
+                <option *ngFor="let type of type_vehicules" [value]="type._id">{{ type.libelle }}</option>
+              </select>
+            </div>
+
+            <!-- Prix -->
+            <div class="col-md-3">
+              <label>Prix:</label>
+              <input type="number" class="form-control" [(ngModel)]="item.prix">
+            </div>
+
+            <!-- Durée -->
+            <div class="col-md-3">
+              <label>Durée:</label>
+              <input type="number" class="form-control" [(ngModel)]="item.duree">
+            </div>
+
+            <!-- Supprimer l'historique -->
+            <div class="col-md-1 text-center">
+              <button type="button" class="btn btn-danger btn-sm mt-4" (click)="retirerHistoriqueD(i)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bouton Ajouter -->
+          <button type="button" class="btn btn-success mt-3" (click)="ajouterHistoriqueD()">
+            Ajouter
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button *ngIf="isManager" type="button" class="btn btn-primary" (click)="enregistrerHistorique()">
+          Enregistrer les modifications
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

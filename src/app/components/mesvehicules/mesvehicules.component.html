@@ -76,59 +76,60 @@
                       </nav>
                    </div>
                 </div>
-                <div class="modal fade" id="post-modal" tabindex="-1" role="dialog" aria-labelledby="post-modalLabel" aria-hidden="true" style="display: none;">
-                   <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                         <div class="modal-header">
-                            <h5 class="modal-title" id="post-modalLabel">Ajout véhicule</h5>
-                            <button type="button" class="btn btn-secondary"  data-dismiss="modal" (click)="reinitialiserAlertAjout()"><i class="ri-close-fill m-0"></i></button>
-                         </div>
-                         <div class="modal-body">
-                            @if (successAjout) {
-                               <div class="alert alert-success" role="alert">
-                                  <div class="iq-alert-text">{{successAjout}}</div>
-                               </div>
-                            }
-                            @if (errorajout.msg) {
-                               <div class="alert alert-danger" role="alert">
-                                  <div class="iq-alert-text">{{errorajout.msg}}</div>
-                               </div>
-                            }
-                            <form (ngSubmit)="ajouterNewVehicule()">
-                               <div class="form-row">
-                                  <div class="form-row">
-                                    <div class="col-md-12 mb-3">
-                                        <label for="matricule">Matricule</label>
-                                        <input type="text" class="form-control" id="matricule" name="matricule" [(ngModel)]="newvehicule.matricule" required>
-                                     </div>
-                                     <div class="col-md-12 mb-3">
-                                        <label for="libelle">Libelle</label>
-                                        <input type="text" class="form-control" id="libelle" name="libelle" [(ngModel)]="newvehicule.libelle" required>
-                                     </div>
-                                     <div class="col-md-12 mb-3">
-                                        <label for="description">Description</label>
-                                        <textarea class="form-control" id="description" rows="2" name="description" [(ngModel)]="newvehicule.description"></textarea>
-                                     </div>
-                                     <div class="col-md-12 mb-3">
-                                        <label for="typevehicule">Type vehicule</label>
-                                        <select class="form-control" id="typevehicule" name="typevehicule" [(ngModel)]="newvehicule.typevehicule">
-                                            <option selected="" disabled="">Choisir le type de véhicule</option>
-                                            <option value="">Ne pas définir</option>
-                                            @for (type of typevehicules; track type._id) {
-                                                <option [value]="type._id">{{type.libelle}}</option>
-                                            }
-                                         </select>
-                                     </div>
-                                  </div>
-                                     <button class="btn btn-primary d-block w-100 mt-3" type="submit">Ajouter</button>
-                               </div>
-                            </form>
-                         </div>
-                      </div>
-                   </div>
-                </div>
+
              </div>
           </div>
        </div>
     </div>
  </div>
+ <div class="modal fade" id="post-modal" tabindex="-1" role="dialog" aria-labelledby="post-modalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="post-modalLabel">Ajout véhicule</h5>
+           <button type="button" class="btn btn-secondary"  data-dismiss="modal" (click)="reinitialiserAlertAjout()"><i class="ri-close-fill m-0"></i></button>
+        </div>
+        <div class="modal-body">
+           @if (successAjout) {
+              <div class="alert alert-success" role="alert">
+                 <div class="iq-alert-text">{{successAjout}}</div>
+              </div>
+           }
+           @if (errorajout.msg) {
+              <div class="alert alert-danger" role="alert">
+                 <div class="iq-alert-text">{{errorajout.msg}}</div>
+              </div>
+           }
+           <form (ngSubmit)="ajouterNewVehicule()">
+              <div class="form-row">
+                 <div class="form-row">
+                   <div class="col-md-12 mb-3">
+                       <label for="matricule">Matricule</label>
+                       <input type="text" class="form-control" id="matricule" name="matricule" [(ngModel)]="newvehicule.matricule" required>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                       <label for="libelle">Libelle</label>
+                       <input type="text" class="form-control" id="libelle" name="libelle" [(ngModel)]="newvehicule.libelle" required>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                       <label for="description">Description</label>
+                       <textarea class="form-control" id="description" rows="2" name="description" [(ngModel)]="newvehicule.description"></textarea>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                       <label for="typevehicule">Type vehicule</label>
+                       <select class="form-control" id="typevehicule" name="typevehicule" [(ngModel)]="newvehicule.typevehicule">
+                           <option selected="" disabled="">Choisir le type de véhicule</option>
+                           <option value="">Ne pas définir</option>
+                           @for (type of typevehicules; track type._id) {
+                               <option [value]="type._id">{{type.libelle}}</option>
+                           }
+                        </select>
+                    </div>
+                 </div>
+                    <button class="btn btn-primary d-block w-100 mt-3" type="submit">Ajouter</button>
+              </div>
+           </form>
+        </div>
+     </div>
+  </div>
+</div>

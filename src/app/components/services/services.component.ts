@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ServiceService } from '../../services/service.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -33,11 +33,12 @@ export class ServicesComponent implements OnInit {
   };
   currentPage: number = 1;
   totalPages: number = 1;
-  itemsPerPage: number = 6; // Modifiable
+  itemsPerPage: number = 3; // Modifiable
 
   constructor(private serviceService: ServiceService,
      private authService: AuthService, private typevehiculeService: TypevehiculeService
-    , private errorService: ErrorService
+    , private errorService: ErrorService,
+    private cdr: ChangeDetectorRef
   ) {
     this.userRole = this.authService.getUserRole();
     this.isManager = this.userRole === 'manager';
@@ -58,6 +59,22 @@ export class ServicesComponent implements OnInit {
     console.log(this.type_vehicules);
     this.searchServices();
   }
+  // partie affichages services
+  formatTypeVehicules(typevehicules: any[]): string {
+    if (!typevehicules || typevehicules.length === 0) {
+      return ''; // Aucun type de véhicule
+    }
+
+    if (typevehicules.length <= 2) {
+      return typevehicules.map((t: any) => t.libelle).join(', '); // Si moins de 3 types, on les affiche tous
+    }
+
+    // Sinon, on affiche les 3 premiers et le reste sous forme de "X autres"
+    const firstThree = typevehicules.slice(0, 2).map((t: any) => t.libelle).join(', ');
+    const othersCount = typevehicules.length - 2;
+    return `${firstThree} et ${othersCount} autres`;
+  }
+
   loadServices(): void {
     this.serviceService.getServices(this.currentPage, this.itemsPerPage).subscribe((response: any) => {
       this.services = response.data.map((service: any) => ({
@@ -65,8 +82,13 @@ export class ServicesComponent implements OnInit {
         historique: service.historique.map((h: any) => ({
           ...h,
           typevehicule: h.typevehicule ? h.typevehicule.libelle : 'Non défini'
-        }))
+        })),
+        typevehicules: this.formatTypeVehicules(service.historique
+          .filter((h: any) => h.typevehicule) // Filtrer seulement ceux qui ont un typevehicule
+          .map((h: any) => h.typevehicule)  // Extraire le typevehicule
+        )
       }));
+
       this.totalPages = response.totalPages;
     });
     console.log(this.services);
@@ -254,7 +276,27 @@ export class ServicesComponent implements OnInit {
 
   openServiceModal(service: any): void {
     this.selectedService = { ...service };
+
+    if (this.selectedService?.historique) {
+      const derniersHistoriques = new Map(); // Stocke le dernier historique par type
+
+      this.selectedService.historique.forEach((historique: { typevehicule: any; etat: any; date: number; }) => {
+        const type = historique.typevehicule;
+
+        // Si on trouve un actif, on le garde et on écrase tout inactif
+        if (historique.etat) {
+          derniersHistoriques.set(type, historique);
+        } else if (!derniersHistoriques.has(type) || historique.date > derniersHistoriques.get(type).date) {
+          // Si pas d’actif pour ce type, on garde le dernier inactif
+          derniersHistoriques.set(type, historique);
+        }
+      });
+
+      // Remplace l'historique avec uniquement les bons éléments
+      this.selectedService.historique = Array.from(derniersHistoriques.values());
+    }
   }
+
 
   openUpdateModal(service: any): void {
     this.serviceService.getServiceById(service._id).subscribe((data) => {
@@ -290,6 +332,13 @@ export class ServicesComponent implements OnInit {
       });
     // }
   }
+  activerService(serviceId: string) {
+    // if (confirm("Voulez-vous vraiment désactiver ce service ?")) {
+      this.serviceService.activerService(serviceId).subscribe(() => {
+        this.loadServices();
+      });
+    // }
+  }
   desactiverHistorique(serviceId: string, historiqueId: string) {
     // if (confirm("Voulez-vous vraiment désactiver cet historique ?")) {
       this.serviceService.desactiverHistorique(serviceId, historiqueId).subscribe(() => {
@@ -321,13 +370,10 @@ export class ServicesComponent implements OnInit {
 
    // ajout histo pour un historique
    newHistorique: any[] = [];
-
-   enregistrerHistorique() {
+  enregistrerHistorique() {
     if (this.selectedService && this.newHistorique.length > 0) {
-      // Prenez le premier élément du tableau (ou traitez tous les éléments si besoin)
       const dernierHistorique = this.newHistorique[this.newHistorique.length - 1];
 
-      // Préparez les données à envoyer
       const historiqueToSend = {
         date: dernierHistorique.date || new Date(),
         prix: dernierHistorique.prix,
@@ -335,14 +381,18 @@ export class ServicesComponent implements OnInit {
         typevehicule: dernierHistorique.typevehicule?._id || dernierHistorique.typevehicule,
         etat: true
       };
+
       console.log(historiqueToSend);
+
       this.serviceService.addHistorique(
         this.selectedService._id,
         historiqueToSend
       ).subscribe({
-        next: () => {
-        // eto tokony asiana reload page 
-          this.newHistorique = []; // Réinitialisez le tableau
+        next: (nouvelHistorique) => {
+          // Ajout immédiat du nouvel historique dans la liste
+          this.selectedService.historique.push(nouvelHistorique);
+          this.newHistorique = [];
+          window.location.reload();
         },
         error: (error) => {
           console.error("Erreur lors de l'ajout de l'historique :", error);
@@ -352,6 +402,7 @@ export class ServicesComponent implements OnInit {
     }
   }
 
+
   ajouterHistoriqueD() {
     this.newHistorique.push({ typevehicule: '', prix: 0, duree: 0 });
   }
@@ -359,6 +410,18 @@ export class ServicesComponent implements OnInit {
   retirerHistoriqueD(index: number) {
     this.newHistorique.splice(index, 1);
   }
+
+  // Vérifie s'il existe un historique actif pour un type de véhicule
+hasActiveForType(typevehiculeId: string): boolean {
+  return this.selectedService?.historique.some((h: { typevehicule: string; etat: any; }) => h.typevehicule === typevehiculeId && h.etat);
+}
+
+// Récupère le libellé du type de véhicule
+getTypeVehiculeLibelle(typevehiculeId: string): string {
+  const typeVehicule = this.type_vehicules.find(t => t._id === typevehiculeId);
+  return typeVehicule ? typeVehicule.libelle : "Inconnu";
+}
+
 
   // partie recherche multi
   filters = {
@@ -375,7 +438,12 @@ export class ServicesComponent implements OnInit {
           historique: service.historique.map((h: any) => ({
             ...h,
             typevehicule: h.typevehicule ? h.typevehicule.libelle : 'Non défini'
-          }))
+          })),
+          typevehicules: this.formatTypeVehicules(service.historique
+            .filter((h: any) => h.typevehicule) // Filtrer seulement ceux qui ont un typevehicule
+            .filter((h:any) => h.etat===true)
+            .map((h: any) => h.typevehicule)  // Extraire le typevehicule
+          )
         }));
       },
       error: (error) => {
