@@ -1,0 +1,340 @@
+[1mdiff --git a/angular.json b/angular.json[m
+[1mindex 92004ac..bc38f54 100644[m
+[1m--- a/angular.json[m
+[1m+++ b/angular.json[m
+[36m@@ -38,11 +38,8 @@[m
+               "./src/assets/css/bootstrap.min.css",[m
+               "./src/assets/css/typography.css",[m
+               "./src/assets/css/style.css",[m
+[31m-              "./src/assets/css/responsive.css",[m
+[31m-              "./src/assets/fullcalendar/core/main.css",[m
+[31m-              "./src/assets/fullcalendar/daygrid/main.css",[m
+[31m-              "./src/assets/fullcalendar/timegrid/main.css",[m
+[31m-              "./src/assets/fullcalendar/list/main.css"[m
+[32m+[m[32m              "./src/assets/css/responsive.css"[m
+[32m+[m
+             ],[m
+             "scripts": [[m
+               "./src/assets/js/jquery.min.js",[m
+[36m@@ -66,11 +63,7 @@[m
+               "./src/assets/js/kelly.js",[m
+               "./src/assets/js/worldLow.js",[m
+               "./src/assets/js/chart-custom.js",[m
+[31m-              "./src/assets/js/custom.js",[m
+[31m-              "./src/assets/fullcalendar/core/main.js",[m
+[31m-              "./src/assets/fullcalendar/daygrid/main.js",[m
+[31m-              "./src/assets/fullcalendar/timegrid/main.js",[m
+[31m-              "./src/assets/fullcalendar/list/main.js"[m
+[32m+[m[32m              "./src/assets/js/custom.js"[m
+             ][m
+           },[m
+           "configurations": {[m
+[1mdiff --git a/src/app/app.routes.ts b/src/app/app.routes.ts[m
+[1mindex 0abed68..c1331f1 100644[m
+[1m--- a/src/app/app.routes.ts[m
+[1m+++ b/src/app/app.routes.ts[m
+[36m@@ -11,6 +11,7 @@[m [mimport { RendezvousComponent } from './components/rendezvous/rendezvous.componen[m
+ import { MecaniciensComponent } from './components/mecaniciens/mecaniciens.component';[m
+ import { TypevehiculesComponent } from './components/typevehicules/typevehicules.component';[m
+ import { MesvehiculesComponent } from './components/mesvehicules/mesvehicules.component';[m
+[32m+[m[32mimport { RendezvousManagerComponent } from './components/rendezvous-manager/rendezvous-manager.component';[m
+ export const routes: Routes = [[m
+     {[m
+         path: '',[m
+[36m@@ -22,6 +23,7 @@[m [mexport const routes: Routes = [[m
+         { path: 'mecaniciens', component: MecaniciensComponent, canActivate: [AuthGuard], data: { roles : ['manager']} },[m
+         { path: 'typevehicules', component: TypevehiculesComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },[m
+         { path: 'mesvehicules', component: MesvehiculesComponent, canActivate: [AuthGuard], data: {roles : ['client']} },[m
+[32m+[m[32m        { path: 'rendezvousManagers', component: RendezvousManagerComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },[m
+         { path: '', redirectTo: 'services', pathMatch: 'full' },[m
+         ],[m
+     },[m
+[1mdiff --git a/src/app/components/mecaniciens/mecaniciens.component.ts b/src/app/components/mecaniciens/mecaniciens.component.ts[m
+[1mindex 0fdca16..577ad1d 100644[m
+[1m--- a/src/app/components/mecaniciens/mecaniciens.component.ts[m
+[1m+++ b/src/app/components/mecaniciens/mecaniciens.component.ts[m
+[36m@@ -56,12 +56,14 @@[m [mexport class MecaniciensComponent implements OnInit{[m
+     }[m
+     this.authservice.registermecanicien(this.user).subscribe({[m
+       next: (response) => {[m
+[32m+[m[32m        console.log(response)[m
+         this.successAjout = response.msg;[m
+         this.user = { nom: '', prenom: '', email: '', mdp: '', mdpconfirm: '' };[m
+         this.loadMecaniciens();[m
+       },[m
+       error: (err) => {[m
+[31m-        this.errorajout.msg = err.msg || "Erreur lors de l'inscription";[m
+[32m+[m[32m        console.log(err);[m
+[32m+[m[32m        this.errorajout.msg = err.error.msg || "Erreur lors de l'inscription";[m
+       },[m
+     });[m
+   }[m
+[36m@@ -95,5 +97,5 @@[m [mexport class MecaniciensComponent implements OnInit{[m
+   get totalPages(): number[] {[m
+     return Array.from({ length: Math.ceil(this.totalMecaniciens / this.limit) }, (_, i) => i + 1);[m
+   }[m
+[31m-  [m
+[32m+[m
+ }[m
+[1mdiff --git a/src/app/components/rendezvous/rendezvous.component.css b/src/app/components/rendezvous/rendezvous.component.css[m
+[1mindex 6284934..75d6411 100644[m
+[1m--- a/src/app/components/rendezvous/rendezvous.component.css[m
+[1m+++ b/src/app/components/rendezvous/rendezvous.component.css[m
+[36m@@ -35,13 +35,51 @@[m
+ [m
+ /* Permet à la ligne d’occuper toute la largeur disponible */[m
+ .row {[m
+[31m-  width: 100%;[m
+[31m-  margin: 0; /* Supprime les marges inutiles */[m
+[32m+[m[32m  width: 90%;[m
+[32m+[m[32m  margin: 0;[m
+ }[m
+ [m
+ /* Assure que les colonnes ne sont pas trop centrées */[m
+ .container {[m
+[31m-  max-width: 100%; /* Évite qu'elle soit trop étroite */[m
+[31m-  padding: 0 20px; /* Ajoute un peu d’espace sur les côtés */[m
+[32m+[m[32m  max-width: 100%;[m
+[32m+[m[32m  padding: 0 20px;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32m::ng-deep .fc-event {[m
+[32m+[m[32m  color: white !important;  /* Assurez-vous que le texte soit lisible */[m
+[32m+[m[32m  border-radius: 4px;       /* Vous pouvez appliquer des bordures arrondies si nécessaire */[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m/* Classe pour les événements passés */[m
+[32m+[m[32m::ng-deep .fc-event.event-past {[m
+[32m+[m[32m  background-color: gray !important;[m
+[32m+[m[32m  border-color: gray !important;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m/* Classe pour les événements d'aujourd'hui */[m
+[32m+[m[32m::ng-deep .fc-event.event-today {[m
+[32m+[m[32m  background-color: blue !important;[m
+[32m+[m[32m  border-color: blue !important;[m
+ }[m
+ [m
+[32m+[m[32m/* Classe pour les événements futurs */[m
+[32m+[m[32m::ng-deep .fc-event.event-future {[m
+[32m+[m[32m  background-color: green !important;[m
+[32m+[m[32m  border-color: green !important;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32m/* partie formulaire */[m
+[32m+[m[32m.modification{[m
+[32m+[m[32m  margin-left: 15%;[m
+[32m+[m[32m}[m
+[32m+[m[32m.modif{[m
+[32m+[m[32m  margin-left: 15%;[m
+[32m+[m[32m  width: 100%;[m
+[32m+[m[32m}[m
+[32m+[m[32m.modifss{[m
+[32m+[m[32m  height: 50%;[m
+[32m+[m[32m}[m
+[1mdiff --git a/src/app/components/rendezvous/rendezvous.component.html b/src/app/components/rendezvous/rendezvous.component.html[m
+[1mindex 263424c..436402e 100644[m
+[1m--- a/src/app/components/rendezvous/rendezvous.component.html[m
+[1m+++ b/src/app/components/rendezvous/rendezvous.component.html[m
+[36m@@ -1,8 +1,8 @@[m
+ <div id="content-page" class="content-page">[m
+   <div class="container mt-2">[m
+     <div class="row">[m
+[31m-      <div class="col-lg-7 col-md-7">[m
+[31m-        <div class="card shadow p-4 w-100">[m
+[32m+[m[32m      <div class="col-lg-6 col-md-7">[m
+[32m+[m[32m        <div class="card shadow p-4 w-100 modification">[m
+           <div class="card-header d-flex justify-content-between align-items-center">[m
+             <h4 class="card-title mb-0">Planning</h4>[m
+             <button class="btn btn-primary" (click)="toggleReservationForm()">[m
+[36m@@ -16,9 +16,9 @@[m
+       </div>[m
+       <div class="col-lg-1"></div>[m
+       <!-- Colonne contenant le formulaire de réservation -->[m
+[31m-      <div class="col-lg-4 col-md-5">[m
+[32m+[m[32m      <div class="col-lg-5 col-md-5 modifss">[m
+         <div *ngIf="showRendezvousList; else reservationForm">[m
+[31m-          <div class="card shadow-lg p-4">[m
+[32m+[m[32m          <div class="card shadow-lg p-4 modif">[m
+             <div class="card-header text-center bg-primary text-white">[m
+               <h4 class="card-title mb-0">Détails des rendez-vous du {{ selectedDateForDetails | date:'dd/MM/yyyy' }}</h4>[m
+             </div>[m
+[36m@@ -55,7 +55,7 @@[m
+         </div>[m
+ [m
+         <ng-template #reservationForm>[m
+[31m-          <div class="card shadow-lg p-4">[m
+[32m+[m[32m          <div class="card shadow-lg p-4 modif">[m
+             <div class="card-header text-center bg-primary text-white">[m
+               <h4 class="card-title mb-0">Réserver un rendez-vous</h4>[m
+             </div>[m
+[36m@@ -94,13 +94,13 @@[m
+                   <label for="email"><strong>Email :</strong></label>[m
+                   <input type="email" class="form-control form-control-lg" id="email"[m
+                   name="email"[m
+[31m-                  value={{userEmail}}[m
+[32m+[m[32m                  [ngModel]="userEmail"[m
+                    [(ngModel)]="email">[m
+                   <strong>*Email utilisé pour envoyer la confirmation et les info sur votre réservation</strong>[m
+                 </div>[m
+                 <div class="form-group">[m
+                   <label for="">Remarques / Commentaires</label>[m
+[31m-                  <textarea class="form-control" [(ngModel)]="commentaire"></textarea>[m
+[32m+[m[32m                  <textarea class="form-control" [(ngModel)]="commentaire" name="commentaire"></textarea>[m
+                </div>[m
+                 <div class="form-group text-center">[m
+                   <button type="submit" class="btn btn-success btn-lg btn-block"[m
+[36m@@ -184,7 +184,7 @@[m [mclass="modal fade" tabindex="-1" id="detailmodal"[m
+   <div class="modal-footer">[m
+     <div class="col-sm-6 text-right">[m
+       <button type="button" class="btn btn-link mr-3"[m
+[31m-      data-dismiss="modal"><i class="ri-printer-line"></i>Annuler</button>[m
+[32m+[m[32m      data-dismiss="modal">Annuler</button>[m
+       <button type="button" class="btn btn-primary"  data-dismiss="modal"[m
+         (click)="confirmRendezVous()"[m
+       >Réserver</button>[m
+[1mdiff --git a/src/app/components/rendezvous/rendezvous.component.ts b/src/app/components/rendezvous/rendezvous.component.ts[m
+[1mindex 8b10fd1..f13d705 100644[m
+[1m--- a/src/app/components/rendezvous/rendezvous.component.ts[m
+[1m+++ b/src/app/components/rendezvous/rendezvous.component.ts[m
+[36m@@ -85,6 +85,7 @@[m [mrendezvousDetails: any = null; // Stocke les détails du rendez-vous[m
+   ngOnInit(): void {[m
+     this.getVehicules();[m
+     this.getRendezvousUtilisateur();[m
+[32m+[m[32m    this.userEmail = this.authService.getUserEmail();[m
+     console.log(this.detail);[m
+   }[m
+   getVehicules(): void {[m
+[36m@@ -112,7 +113,11 @@[m [mrendezvousDetails: any = null; // Stocke les détails du rendez-vous[m
+     }[m
+   }[m
+ [m
+[32m+[m
+   initCalendar(): void {[m
+[32m+[m[32m    if (this.calendar) {[m
+[32m+[m[32m      this.calendar.destroy();[m
+[32m+[m[32m    }[m
+     if (this.calendarContainer?.nativeElement && !this.calendar) {[m
+       this.calendar = new Calendar(this.calendarContainer.nativeElement, {[m
+         plugins: [dayGridPlugin, timeGridPlugin, listPlugin],[m
+[36m@@ -123,12 +128,6 @@[m [mrendezvousDetails: any = null; // Stocke les détails du rendez-vous[m
+           center: 'title',[m
+           right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'[m
+         },[m
+[31m-        events: [[m
+[31m-          { title: 'All Day Event', start: '2024-03-01', color: '#fc9919' },[m
+[31m-          { title: 'Long Event', start: '2024-03-07', end: '2024-03-10', color: '#ffc107' },[m
+[31m-          { title: 'Meeting', start: '2024-03-12T10:30:00', end: '2024-03-12T12:30:00', color: '#827af3' },[m
+[31m-          { title: 'Birthday Party', start: '2024-03-28T07:00:00', color: '#28a745' }[m
+[31m-        ][m
+       });[m
+       this.calendar.render();[m
+     }[m
+[36m@@ -234,34 +233,57 @@[m [mgetRendezvousUtilisateur(): void {[m
+     }[m
+   );[m
+ }[m
+[32m+[m[32mgetEventColor(date: string | Date): string {[m
+[32m+[m[32m  const rdvDate = new Date(date);[m
+[32m+[m[32m  const today = new Date();[m
+[32m+[m
+[32m+[m[32m  // Supprime l'heure pour comparer uniquement la date[m
+[32m+[m[32m  today.setHours(0, 0, 0, 0);[m
+[32m+[m[32m  rdvDate.setHours(0, 0, 0, 0);[m
+[32m+[m
+[32m+[m[32m  if (rdvDate < today) {[m
+[32m+[m[32m    return 'event-past';  // Classe CSS pour les événements passés[m
+[32m+[m[32m  } else if (rdvDate.getTime() === today.getTime()) {[m
+[32m+[m[32m    return 'event-today';  // Classe CSS pour les événements d'aujourd'hui[m
+[32m+[m[32m  } else {[m
+[32m+[m[32m    return 'event-future';  // Classe CSS pour les événements futurs[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[32m+[m
+ updateCalendarEvents(): void {[m
+   if (this.calendar) {[m
+     this.calendar.removeAllEvents();[m
+[31m-    console.log(this.rendezvousUtilisateur);[m
+     this.rendezvousUtilisateur.forEach(rdv => {[m
+       this.calendar.addEvent({[m
+[31m-        title: `Pour ${rdv.vehicule.libelle} - ${rdv.services.map((s: { nom: any; }) => s.nom).join(", ")}`,[m
+[32m+[m[32m        title: `${rdv.vehicule.libelle}`,[m
+         start: rdv.date,[m
+[31m-        color: '#007bff',[m
+[32m+[m[32m        classNames: [this.getEventColor(rdv.date)],[m
+[32m+[m[32m        eventColor:"green",[m
+         extendedProps: { rdv } // Stocke les détails du rendez-vous[m
+       });[m
+     });[m
+ [m
+     // Gérer le clic sur un événement[m
+[31m-    this.calendar.on('eventClick', (info: { event: { extendedProps: { rdv: any; }; }; }) => {[m
+[32m+[m[32m    this.calendar.on("eventClick", (info: { event: { extendedProps: { rdv: any; }; }; }) => {[m
+       const selectedRdv = info.event.extendedProps.rdv;[m
+[31m-      this.afficherRendezvousDuJour(selectedRdv.date);[m
+[32m+[m[32m      this.afficherRendezvousDuJour(selectedRdv);[m
+     });[m
+   }[m
+ }[m
+[32m+[m
+[32m+[m
+ // getServicesNoms(rdv: any): string {[m
+ //   return rdv.services.map((s: { nom: string }) => s.nom).join("et  ");[m
+ // }[m
+ getServicesNoms(rdv: any): string {[m
+[32m+[m[32m  console.log("atovvvvv");[m
+[32m+[m[32m  console.log(rdv);[m
+   return rdv.services.map((s: { nom: any; prixEstime: any; dureeEstimee: any; }) => `${s.nom} (${s.prixEstime || 'N/A'} Ar, ${s.dureeEstimee || 'N/A'} min)`).join(', ');[m
+ }[m
+ [m
+ afficherRendezvousDuJour(date: string): void {[m
+[32m+[m[32m  console.log("hereee");[m
+[32m+[m[32m  console.log(date);[m
+   this.selectedDateForDetails = date;[m
+   this.rendezvousDuJour = this.rendezvousUtilisateur.filter(rdv =>[m
+     new Date(rdv.date).toDateString() === new Date(date).toDateString()[m
+[36m@@ -280,6 +302,7 @@[m [mtoggleSelection(serviceId: string, event: Event): void {[m
+ }[m
+ [m
+ confirmRendezVous(): void {[m
+[32m+[m
+   if (!this.rendezvousDetails || !this.rendezvousDetails.details) {[m
+     console.error("Aucun détail de rendez-vous disponible !");[m
+     return;[m
+[36m@@ -292,7 +315,7 @@[m [mconfirmRendezVous(): void {[m
+ [m
+ [m
+   if (servicesRestants.length === 0) {[m
+[31m-    console.warn("⚠ Tous les services ont été supprimés, annulation de l'envoi.");[m
+[32m+[m[32m    console.warn("Tous les services ont été supprimés, annulation de l'envoi.");[m
+     return;[m
+   }[m
+ [m
+[36m@@ -304,8 +327,7 @@[m [mconfirmRendezVous(): void {[m
+     commentaire: this.commentaire,[m
+     email:this.email[m
+   };[m
+[31m-[m
+[31m-[m
+[32m+[m[32m  alert(JSON.stringify(rendezvousData,null,2));[m
+   // Envoyer les services restants[m
+   this.rendezvousService.confirmerRendezvous(rendezvousData).subscribe([m
+     response => {[m
+[1mdiff --git a/src/app/components/services/services.component.html b/src/app/components/services/services.component.html[m
+[1mindex fb6e930..826e653 100644[m
+[1m--- a/src/app/components/services/services.component.html[m
+[1m+++ b/src/app/components/services/services.component.html[m
+[36m@@ -1,7 +1,6 @@[m
+ <div id="content-page" class="content-page">[m
+   <div class="container">[m
+     <div class="row">[m
+[31m-      <!--  -->[m
+       <div class="row d-flex justify-content-end " *ngIf="userRole === 'manager'">[m
+         <button type="button" class="btn iq-bg-dark" data-toggle="modal" data-target="#exampleModalCenteredScrollable">[m
+           <i class="ri-add-line"></i> Ajouter un service[m
+[36m@@ -31,60 +30,92 @@[m
+           </div>

@@ -11,6 +11,7 @@ import { RendezvousComponent } from './components/rendezvous/rendezvous.componen
 import { MecaniciensComponent } from './components/mecaniciens/mecaniciens.component';
 import { TypevehiculesComponent } from './components/typevehicules/typevehicules.component';
 import { MesvehiculesComponent } from './components/mesvehicules/mesvehicules.component';
+import { RendezvousManagerComponent } from './components/rendezvous-manager/rendezvous-manager.component';
 export const routes: Routes = [
     {
         path: '',
@@ -22,6 +23,7 @@ export const routes: Routes = [
         { path: 'mecaniciens', component: MecaniciensComponent, canActivate: [AuthGuard], data: { roles : ['manager']} },
         { path: 'typevehicules', component: TypevehiculesComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: 'mesvehicules', component: MesvehiculesComponent, canActivate: [AuthGuard], data: {roles : ['client']} },
+        { path: 'rendezvousManagers', component: RendezvousManagerComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: '', redirectTo: 'services', pathMatch: 'full' },
         ],
     },

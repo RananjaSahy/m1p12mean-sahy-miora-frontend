@@ -56,12 +56,14 @@ export class MecaniciensComponent implements OnInit{
     }
     this.authservice.registermecanicien(this.user).subscribe({
       next: (response) => {
+        console.log(response)
         this.successAjout = response.msg;
         this.user = { nom: '', prenom: '', email: '', mdp: '', mdpconfirm: '' };
         this.loadMecaniciens();
       },
       error: (err) => {
-        this.errorajout.msg = err.msg || "Erreur lors de l'inscription";
+        console.log(err);
+        this.errorajout.msg = err.error.msg || "Erreur lors de l'inscription";
       },
     });
   }
@@ -95,5 +97,5 @@ export class MecaniciensComponent implements OnInit{
   get totalPages(): number[] {
     return Array.from({ length: Math.ceil(this.totalMecaniciens / this.limit) }, (_, i) => i + 1);
   }
-  
+
 }
