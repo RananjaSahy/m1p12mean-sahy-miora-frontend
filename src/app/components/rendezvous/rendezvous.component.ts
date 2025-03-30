@@ -121,6 +121,7 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
     }
     if (this.calendarContainer?.nativeElement && !this.calendar) {
       this.calendar = new Calendar(this.calendarContainer.nativeElement, {
+        locale:'fr',
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
         timeZone: 'UTC',
         defaultView: 'dayGridMonth',
@@ -266,6 +267,7 @@ updateCalendarEvents(): void {
     // Gérer le clic sur un événement
     this.calendar.on("eventClick", (info: { event: { extendedProps: { rdv: any; }; }; }) => {
       const selectedRdv = info.event.extendedProps.rdv;
+      console.log("selectedrdv = ",selectedRdv);
       this.afficherRendezvousDuJour(selectedRdv);
     });
   }
@@ -275,36 +277,60 @@ updateCalendarEvents(): void {
 // getServicesNoms(rdv: any): string {
 //   return rdv.services.map((s: { nom: string }) => s.nom).join("et  ");
 // }
+getStatus(dateRdv: string): string {
+  const today = new Date();
+  const rdvDate = new Date(dateRdv);
+
+  if (rdvDate.toDateString() === today.toDateString()) {
+    return "À présent";  // Si c'est aujourd'hui
+  } else if (rdvDate > today) {
+    return "Planifié";  // Si c'est une date future
+  }
+  return "";  // Si la date est passée, on n'affiche rien
+}
+
 getServicesNoms(rdv: any): string {
-  // Vérifier que `rdv.services` est défini et contient des services
-  console.log("services = ",rdv)
+  console.log("Rendez-vous =", rdv);
+
   if (rdv.services && rdv.services.length > 0) {
-    return rdv.services.map((s: { nom: string; prixEstime: any; dureeEstimee: any; }) => {
-      // Si prixEstime et dureeEstimee sont définis, on les affiche, sinon on affiche 'N/A'
+    console.log("services.nomms = ",rdv.services)
+    return rdv.services.map((s:any) => {
+      const nomService = s.nom ? s.nom :'Service inconnu';
       const prix = s.prixEstime ? `${s.prixEstime} Ar` : 'N/A';
       const duree = s.dureeEstimee ? `${s.dureeEstimee} min` : 'N/A';
-      return `${s.nom} (${prix}, ${duree})`;
-    }).join(', '); // Joindre tous les services avec une virgule
+      return `${nomService} (${prix}, ${duree})`;
+    }).join(', ');
   }
-  return 'Aucun service disponible'; // Cas où il n'y a pas de services
+
+  return 'Aucun service disponible';
 }
 
 
-afficherRendezvousDuJour(date: string): void {
-  console.log("hereee");
-  console.log(date);
-  this.selectedDateForDetails = date;
 
-  // Récupérer tous les rendez-vous qui correspondent à cette date, peu importe l'heure
-  this.rendezvousDuJour = this.rendezvousUtilisateur.filter(rdv =>
-    new Date(rdv.date).toDateString() === new Date(date).toDateString()
+afficherRendezvousDuJour(rdv: any): void {
+  console.log("hereee");
+  console.log(rdv);
+
+  // Extraire la date du rendez-vous
+  const dateRdv = new Date(rdv.date);
+
+  // Stocker cette date pour l'affichage
+  this.selectedDateForDetails = dateRdv.toDateString();
+
+  console.log("Selected Date for Details:", this.selectedDateForDetails);
+
+  // Filtrer les rendez-vous ayant la même date (peu importe l'heure)
+  this.rendezvousDuJour = this.rendezvousUtilisateur.filter(r =>
+    new Date(r.date).toDateString() === dateRdv.toDateString()
   );
 
-  // Afficher le nombre total de rendez-vous pour cette date
+  // Mettre à jour le nombre total de rendez-vous à cette date
   this.totalRdvPourLaDate = this.rendezvousDuJour.length;
 
-  this.showRendezvousList = true; // Afficher la liste des rendez-vous
+  // Afficher la liste des rendez-vous
+  this.showRendezvousList = true;
 }
+
 
 
 // partie modifier le rendez vous

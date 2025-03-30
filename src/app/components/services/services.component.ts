@@ -446,7 +446,9 @@ getTypeVehiculeLibelle(typevehiculeId: string): string {
         }));
       },
       error: (error) => {
-        console.error(' Erreur recherche services:', error);
+        console.log(error.error.msg);
+        this.errorService.showError(error.error.msg);
+        // console.error(' Erreur recherche services:', error);
       }
     });
   }

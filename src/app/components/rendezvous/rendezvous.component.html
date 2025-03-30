@@ -31,11 +31,15 @@
                   </div>
                   <div class="media-support-info ml-3">
                     <h6 class="d-inline-block">{{ rdv.vehicule.libelle }}</h6>
-                    <span class="badge badge-warning ml-3 text-white">Planifié</span>
+                    <span *ngIf="getStatus(rdv.date) !== ''"
+                    class="badge ml-3 text-white"
+                    [ngClass]="{'badge-warning': getStatus(rdv.date) === 'Planifié', 'badge-success': getStatus(rdv.date) === 'À présent'}">
+                {{ getStatus(rdv.date) }}
+              </span>
                     <p class="mb-0">
-                      Services : {{ getServicesNoms(rdv) }}
+                      <strong >Services :</strong>  {{ getServicesNoms(rdv) }}
                     </p>
-                    <p class="mb-0">Commentaire : {{ rdv.commentaire }}</p>
+                    <p class="mb-0"> <strong>Commentaire :</strong> {{ rdv.commentaire }}</p>
                   </div>
                   <div class="iq-card-header-toolbar d-flex align-items-center">
                     <div class="custom-control custom-checkbox">
