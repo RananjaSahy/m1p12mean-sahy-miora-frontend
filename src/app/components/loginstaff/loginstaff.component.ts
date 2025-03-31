@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class LoginstaffComponent {
   error = {msg:''};
-  user = {email: '', mdp:''};
+  user = {email: 'voninolivam@gmail.com', mdp:'androany'};
 
   constructor(private authservice: AuthService,private router: Router, private cdRef: ChangeDetectorRef) {}
 
