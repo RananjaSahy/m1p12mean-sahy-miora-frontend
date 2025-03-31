@@ -60,4 +60,16 @@ export class UtilisateursService {
     return this.http.get<any>(`${this.apiUrl}/mesvehicules`, { params, headers });
   }
   
+
+  getMesactions(): Observable<any> {
+    const token = this.authservice.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    
+    return this.http.get<any>(`${this.apiUrl}/mesactions`, { headers });
+  }
+  
 }

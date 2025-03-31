@@ -12,6 +12,7 @@ import { MecaniciensComponent } from './components/mecaniciens/mecaniciens.compo
 import { TypevehiculesComponent } from './components/typevehicules/typevehicules.component';
 import { MesvehiculesComponent } from './components/mesvehicules/mesvehicules.component';
 import { RendezvousManagerComponent } from './components/rendezvous-manager/rendezvous-manager.component';
+import { MesactionsComponent } from './components/mesactions/mesactions.component';
 export const routes: Routes = [
     {
         path: '',
@@ -24,6 +25,7 @@ export const routes: Routes = [
         { path: 'typevehicules', component: TypevehiculesComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: 'mesvehicules', component: MesvehiculesComponent, canActivate: [AuthGuard], data: {roles : ['client']} },
         { path: 'rendezvousManagers', component: RendezvousManagerComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
+        { path: 'mesactions', component: MesactionsComponent, canActivate: [AuthGuard], data: {roles : ['client']} },
         { path: '', redirectTo: 'services', pathMatch: 'full' },
         ],
     },
