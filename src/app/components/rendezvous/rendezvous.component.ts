@@ -368,10 +368,10 @@ confirmRendezVous(): void {
     commentaire: this.commentaire,
     email:this.email
   };
-  alert(JSON.stringify(rendezvousData,null,2));
   // Envoyer les services restants
   this.rendezvousService.confirmerRendezvous(rendezvousData).subscribe(
     response => {
+      window.location.reload();
       console.log("Rendez-vous mis à jour avec succès !", response);
     },
     error => {
