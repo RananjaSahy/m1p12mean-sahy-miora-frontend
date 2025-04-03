@@ -13,6 +13,8 @@ import { TypevehiculesComponent } from './components/typevehicules/typevehicules
 import { MesvehiculesComponent } from './components/mesvehicules/mesvehicules.component';
 import { RendezvousManagerComponent } from './components/rendezvous-manager/rendezvous-manager.component';
 import { MesactionsComponent } from './components/mesactions/mesactions.component';
+import { ActionComponent } from './components/action/action.component';
+import { StatistiqueComponent } from './components/statistique/statistique.component';
 export const routes: Routes = [
     {
         path: '',
@@ -26,6 +28,11 @@ export const routes: Routes = [
         { path: 'mesvehicules', component: MesvehiculesComponent, canActivate: [AuthGuard], data: {roles : ['client']} },
         { path: 'rendezvousManagers', component: RendezvousManagerComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: 'mesactions', component: MesactionsComponent, canActivate: [AuthGuard], data: {roles : ['client']} },
+        { path: 'occupation', component: StatistiqueComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
+        { path: 'task', component: ActionComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
+        { path: 'task/:id', component: ActionComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
+
+        // { path: 'clients/:id', component: ClientDetailComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: '', redirectTo: 'services', pathMatch: 'full' },
         ],
     },

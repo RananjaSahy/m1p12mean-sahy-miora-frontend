@@ -114,14 +114,12 @@ export class ServicesComponent implements OnInit {
   onDureeChange(event: Event, index: number) {
     const inputElement = event.target as HTMLElement;
 
-    // ✅ Sauvegarder la position du curseur
     const selection = window.getSelection();
     const range = selection?.getRangeAt(0);
     const cursorPosition = range ? range.startOffset : null;
 
-    const newValue = inputElement.innerText.trim(); // Récupérer la nouvelle valeur
+    const newValue = inputElement.innerText.trim(); 
 
-    // ✅ Convertir en minutes avant de stocker
     const convertedMinutes = this.parseDuree(newValue);
     if (isNaN(convertedMinutes)) {
       console.error("Format invalide :", newValue);

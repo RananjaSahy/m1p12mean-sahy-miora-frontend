@@ -5,22 +5,25 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ServiceService } from '../../services/service.service';
 import { TypevehiculeService } from '../../services/typevehicule.service';
+import {
+  NgApexchartsModule
+} from "ng-apexcharts";
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-rendezvous-manager',
    imports: [
       CommonModule,
-      FormsModule
+      FormsModule,
+      NgApexchartsModule,RouterModule
     ],
   templateUrl: './rendezvous-manager.component.html',
   styleUrls: ['./rendezvous-manager.component.css']
 })
 export class RendezvousManagerComponent implements OnInit {
   @ViewChild(ErrorModalComponent) errorModal!: ErrorModalComponent;
-
   rendezvousList: any[] = [];  // Stocke les rendez-vous récupérés
   type_vehicules: any[] = [];  // Liste des types de véhicules
   servicesList: any[] = [];    // Liste des services disponibles
-
   filters = {
     dateMin: '',
     dateMax: '',
@@ -30,6 +33,9 @@ export class RendezvousManagerComponent implements OnInit {
     services: '',
     nomUtilisateur: ''
   };
+
+
+
   constructor(private rendezvousmService: RendezvousMService,
           private serviceService : ServiceService,
           private typevehiculeService: TypevehiculeService

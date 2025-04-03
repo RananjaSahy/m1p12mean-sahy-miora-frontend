@@ -1,0 +1,165 @@
+<div id="content-page" class="content-page">
+  <div class="container">
+    <div class="row">
+      <!-- A faire -->
+      <div class="col-lg-4">
+        <div class="iq-card">
+          <div class="iq-card-header d-flex justify-content-between">
+            <div class="iq-header-title">
+              <h4 class="card-title">À faire ({{ getActionsByStatus(1).length }})</h4>
+            </div>
+          </div>
+          <div class="iq-card-body" >
+            <ul class="iq-timeline">
+              <li *ngFor="let action of getActionsByStatus(1)"
+              data-toggle="modal"
+              data-target="#affectionmodal"
+              (click)="openModal(action)" >
+                <div class="timeline-dots border-danger"></div>
+                <h6 class="float-left mb-1">{{ action.service.nom }}</h6>
+                <small class="float-right mt-1">{{ action.createdAt | date:'dd MMM yyyy HH:mm' }}</small>
+                <div class="d-inline-block w-100">
+                  <p>Véhicule: {{ action.vehicule.matricule }} - {{ action.vehicule.libelle }}</p>
+                  <p>Prix: {{ formatPrix(action.prix)  }} Ar</p>
+                  <p>Responsables: {{ action.responsables.length }}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- En cours -->
+      <div class="col-lg-4">
+        <div class="iq-card">
+          <div class="iq-card-header d-flex justify-content-between">
+            <div class="iq-header-title">
+              <h4 class="card-title">En cours ({{ getActionsByStatus(5).length }})</h4>
+            </div>
+          </div>
+          <div class="iq-card-body">
+            <ul class="iq-timeline">
+              <li *ngFor="let action of getActionsByStatus(5)"
+              data-toggle="modal"
+              data-target="#affectionmodal"
+              (click)="openModal(action)" >
+                <div class="timeline-dots border-primary"></div>
+                <h6 class="float-left mb-1">{{ action.service.nom }}</h6>
+                <small class="float-right mt-1">{{ action.updatedAt |  date:'dd MMM yyyy HH:mm' }}</small>
+                <div class="d-inline-block w-100">
+                  <p>Véhicule: {{ action.vehicule.matricule }} - {{ action.vehicule.libelle }}</p>
+                  <p>Prix: {{ action.prix }} Ar</p>
+                  <p>Responsables: {{ action.responsables[0].nom }} {{ action.responsables[0].prenom }}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terminé -->
+      <div class="col-lg-4">
+        <div class="iq-card">
+          <div class="iq-card-header d-flex justify-content-between">
+            <div class="iq-header-title">
+              <h4 class="card-title">Terminé ({{ getActionsByStatus(10).length }})</h4>
+            </div>
+          </div>
+          <div class="iq-card-body">
+            <ul class="iq-timeline">
+              <li *ngFor="let action of getActionsByStatus(10)"
+              data-toggle="modal"
+              data-target="#affectionmodal"
+              (click)="openModal(action)" >
+                <div class="timeline-dots border-success"></div>
+                <h6 class="float-left mb-1">{{ action.service.nom }}</h6>
+                <small class="float-right mt-1">{{ action.updatedAt |  date:'dd MMM yyyy HH:mm' }}</small>
+                <div class="d-inline-block w-100">
+                  <p>Véhicule: {{ action.vehicule.matricule }} - {{ action.vehicule.libelle }}</p>
+                  <p>Prix: {{ action.prix }} Ar</p>
+                  <p>Responsables: {{ action.responsables[0].nom }} {{ action.responsables[0].prenom }}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <div id="affectionmodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Détails de l'action</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="selectedAction">
+            <ul class="todo-task-lists m-0 p-0">
+              <li class="d-flex align-items-center p-3">
+                <div class="media-support-info ml-3">
+                  <p class="mb-0">
+                    <strong>Libelle :</strong> {{ selectedAction.vehicule.libelle }}
+                    <span class="badge badge-primary ml-3 text-white">{{ selectedAction.statutActuel.etatString }}</span>
+                    <span *ngIf="selectedAction.etatPayement === 'non payé'" class="badge badge-warning ml-3 text-white">
+                      Non payé
+                    </span>
+                    <span *ngIf="selectedAction.etatPayement === 'payé'" class="badge badge-success ml-3 text-white">
+                      Payé
+                    </span>
+                  </p>
+                  <p class="mb-0">
+                    <strong>Matricule :</strong> {{ selectedAction.vehicule.matricule }}
+                  </p>
+                  <p class="mb-0">
+                    <strong>Type du véhicule :</strong> {{ selectedAction.vehicule.typevehicule?.libelle }}
+                  </p>
+                  <hr>
+                  <p class="mb-0">
+                    <strong>Service :</strong> {{ selectedAction.service.nom }}
+                  </p>
+                  <p class="mb-0">
+                    <strong>Commentaire :</strong> {{ selectedAction.rendezVous.commentaire || 'Aucun' }}
+                  </p>
+                  <p class="mb-0">
+                    <strong>Prix :</strong> {{ formatPrix(selectedAction.prix)  }} Ar
+                  </p>
+                  <p class="mb-0">
+                    <strong>Date du rendez-vous :</strong> {{ selectedAction.rendezVous.date | date:'dd/MM/yyyy HH:mm' }}
+                  </p>
+                  <hr>
+                </div>
+              </li>
+            </ul>
+            <!-- Affichage des responsables -->
+            <ul *ngIf="selectedAction.responsables.length > 0">
+
+              <li *ngFor="let resp of selectedAction.responsables">
+                <i class="las la-user"></i> {{ resp.nom }} {{ resp.prenom }}
+              </li>
+            </ul>
+
+            <!-- Formulaire d'ajout de responsable si aucun responsable -->
+            <div *ngIf="selectedAction.responsables.length === 0" class="form-group row">
+              <div class="col-sm-4"><label>Ajouter un responsable :</label></div>
+              <div class="col-sm-8">
+                <select [(ngModel)]="selectedResponsableId" class="form-control">
+                  <option *ngFor="let mecano of mecanos" [value]="mecano._id">
+                    {{ mecano.nom }} {{ mecano.prenom }}
+                  </option>
+                </select>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button (click)="addResponsable()" class="btn btn-primary mt-2 btn-sm"  data-dismiss="modal">Ajouter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
