@@ -1,0 +1,98 @@
+<div id="content-page" class="content-page">
+    <div class="container mt-2">
+      <div class="row">
+        <div class="col-lg-6 col-md-7">
+          <div class="card shadow p-4 w-100 modification">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4 class="card-title mb-0">Mes actions</h4>
+            </div>
+            <div class="card-body">
+                <ul class="todo-task-lists m-0 p-0">
+                  @for (action of mesactions; track action._id) {
+                      <li class="d-flex align-items-center p-3" (click)="selectAction(action)" [class.selected]="action === actionselectionne">
+                        <div class="media-support-info ml-3">
+                          <h6 class="d-inline-block">{{action.vehicule.matricule}}</h6>
+                          <span class="badge badge-primary ml-3 text-white">{{action.statutActuel.etatString}}</span>
+
+                          @if (action.etatPayement === 'non payé') {
+                            <span class="badge badge-warning ml-3 text-white">Non payé</span>
+                          }@else if (action.etatPayement === 'non payé') {
+                            <span class="badge badge-succes ml-3 text-white">Payé</span>
+                          }
+                          <p class="mb-0">{{action.service.nom}}</p>
+                        </div>
+                        <div class="iq-card-header-toolbar d-flex align-items-center">
+                          {{action.prix}} Ar
+                        </div>
+                    </li>
+                  }
+                 </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-1"></div>
+        <div class="col-lg-5 col-md-5 modifss">
+          <div>
+            <div *ngIf="actionselectionne" class="card shadow-lg p-4 modif">
+              <div class="card-header text-center bg-primary text-white">
+                <h4 class="card-title mb-0">Détails de l'action</h4>
+                
+              </div>
+              <div class="card-body">
+                <ul class="todo-task-lists m-0 p-0">
+                  <li class="d-flex align-items-center p-3">
+                    <div class="media-support-info ml-3">
+                      <h5>{{ actionselectionne.prix }} Ar</h5>
+                      <span class="badge badge-primary ml-3 text-white">{{ actionselectionne.statutActuel.etatString }}</span>
+                      <span *ngIf="actionselectionne.etatPayement === 'non payé'" class="badge badge-warning ml-3 text-white">
+                        Non payé
+                      </span>
+                      <span *ngIf="actionselectionne.etatPayement === 'payé'" class="badge badge-success ml-3 text-white">
+                        Payé
+                      </span>
+                      <hr>
+                      <p class="mb-0">
+                        <strong>Libelle :</strong> {{ actionselectionne.vehicule.libelle }}
+                      </p>
+                      <p class="mb-0">
+                        <strong>Matricule :</strong> {{ actionselectionne.vehicule.matricule }}
+                      </p>
+                      <p class="mb-0">
+                        <strong>Type du véhicule :</strong> {{ actionselectionne.vehicule.typevehicule?.libelle }}
+                      </p>
+                      <hr>
+                      <p class="mb-0">
+                        <strong>Service :</strong> {{ actionselectionne.service.nom }}
+                      </p>
+                      <p class="mb-0">
+                        <strong>Commentaire :</strong> {{ actionselectionne.rendezVous.commentaire || 'Aucun' }}
+                      </p>
+                      <p class="mb-0">
+                        <strong>Prix :</strong> {{ actionselectionne.prix }} Ar
+                      </p>
+                      <p class="mb-0">
+                        <strong>Date du rendez-vous :</strong> {{ actionselectionne.rendezVous.date | date:'dd/MM/yyyy HH:mm' }}
+                      </p>
+                    </div>
+                  </li>
+                    @if (actionselectionne.statutActuel.etat <= 5 && actionselectionne.statutActuel.etat > 0) {
+                      <button (click)="annulerAction()" type="button" class="btn btn-danger float-right">Annuler l'action</button>
+                    }
+                    @if (actionselectionne.statutActuel.etat <= 5 && actionselectionne.statutActuel.etat !== 1) {
+                      <button (click)="replannifierAction()" type="button" class="btn btn-warning float-right">Replannifier l'action</button>
+                    }
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  
+
+  

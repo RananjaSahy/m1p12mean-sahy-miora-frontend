@@ -1,0 +1,11 @@
+/* Permet à la ligne d’occuper toute la largeur disponible */
+.row {
+  width: 90%;
+  margin: 0;
+}
+
+/* Assure que les colonnes ne sont pas trop centrées */
+.container {
+  max-width: 95%;
+  margin-left: 15%;
+}

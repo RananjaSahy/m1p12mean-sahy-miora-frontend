@@ -1,0 +1,55 @@
+<div id="content-page" class="content-page">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h5>Facture pour le rendez-vous </h5>
+        <div *ngIf="facture.utilisateur">
+          <p><strong>Client:</strong> {{ facture.utilisateur?.nom ?? 'Inconnu' }} {{ facture.utilisateur?.prenom ?? '' }}</p>
+          <p><strong>Email:</strong> {{ facture.utilisateur?.email ?? 'Non renseigné' }}</p>
+        </div>
+        <div *ngIf="facture.vehicule">
+          <p><strong>Véhicule:</strong> {{ facture.vehicule?.libelle ?? 'Inconnu' }} ({{ facture.vehicule?.matricule ?? 'Non renseigné' }})</p>
+        </div>
+
+        <div *ngIf="loading">Chargement...</div>
+
+        <div class="table-responsive-sm" *ngIf="!loading && (facture.items ?? []).length > 0">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="text-center" scope="col">#</th>
+                <th scope="col">Service</th>
+                <th class="text-center" scope="col">Prix (Ar)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of facture.items">
+                <th class="text-center" scope="row">{{ item.id }}</th>
+                <td>{{ item.item }}</td>
+                <td class="text-center"> <b>{{ formatPrix(item.price) }}</b></td>
+              </tr>
+              <tr>
+                <th colspan="2" class="text-right"><b>Total</b></th>
+                <td class="text-center"><b>{{ formatPrix(facture.total) }}</b></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="facture.items?.length === 0" class="text-center">
+          <p>Aucune facture disponible pour ce rendez-vous.</p>
+        </div>
+      </div>
+
+      <div class="col-sm-6"></div>
+      <div class="col-sm-6 text-right">
+        <button type="button" class="btn btn-link mr-3" (click)="downloadPDF()"><i class="ri-printer-line"></i> Télécharger</button>
+      </div>
+
+      <div class="col-sm-12 mt-5">
+        <b class="text-danger">Notes:</b>
+        <p>Les informations affichées sont basées sur les actions réalisées pendant le rendez-vous. Toutes les informations sont calculées en fonction des services et de leurs prix respectifs.</p>
+      </div>
+    </div>
+  </div>
+</div>

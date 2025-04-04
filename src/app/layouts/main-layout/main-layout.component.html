@@ -3,6 +3,9 @@
     <div id="sidebar-scrollbar">
       <nav class="iq-sidebar-menu">
         <ul id="iq-sidebar-toggle" class="iq-menu">
+          <li>
+            <a href="services"><i class="las la-store"></i><span>Services</span></a>
+          </li>
           @if(userRole && userRole === 'manager'){
             <li>
               <a href="mecaniciens"><i class="las la-wrench"></i><span>Mécaniciens</span></a>
@@ -10,22 +13,41 @@
             <li>
               <a href="typevehicules"><i class="las la-cog"></i><span>Type véhicule</span></a>
             </li>
-
+            <li>
+              <a href="rendezvousManagers"><i class="las la-calendar"></i><span>Rendez-vous</span></a>
+            </li>
             <li>
               <a href="task"><i class="las la-tasks"></i><span>Taches</span></a>
+            </li>
+            <li>
+              <a href="clients"><i class="las la-address-book"></i><span>Clients</span></a>
+            </li>
+            <li>
+              <a href="#blog" class="  collapsed"  data-toggle="collapse" aria-expanded="false"><i class="las la-chart-bar"></i>
+                <span>Statistiques</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+              <ul id="blog" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                 <li><a href="occupation"><i class="las la-tachometer-alt"></i>Occupation des mécano</a></li>
+                 <!-- <li><a href="blog-list.html"><i class="ri-list-check-2"></i>Blog List</a></li>
+                 <li><a href="blog-detail.html"><i class="ri-information-line"></i>Blog Detail</a></li> -->
+              </ul>
+           </li>
+          }
+          @if(userRole && userRole === 'mecanicien'){
+            <li>
+              <a href="actionmecano"><i class="las la-bolt"></i><span>Actions</span></a>
             </li>
           }
           @if(userRole && userRole === 'client'){
             <li>
               <a href="mesvehicules"><i class="las la-car"></i><span>Mes véhicules</span></a>
             </li>
+            <li>
+              <a href="rendezvous"><i class="las la-calendar"></i><span>Rendez-vous</span></a>
+            </li>
+            <li>
+              <a href="mesactions"><i class="las la-bolt"></i><span>Mes actions</span></a>
+            </li>
           }
-          <li>
-            <a href="rendezvous"><i class="las la-calendar"></i><span>Rendez-vous</span></a>
-          </li>
-          <li>
-            <a href="services"><i class="las la-store"></i><span>Services</span></a>
-          </li>
         </ul>
       </nav>
       <div class="p-3"></div>

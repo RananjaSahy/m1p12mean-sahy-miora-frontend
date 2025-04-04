@@ -114,24 +114,20 @@ export class ServicesComponent implements OnInit {
   onDureeChange(event: Event, index: number) {
     const inputElement = event.target as HTMLElement;
 
-    // ✅ Sauvegarder la position du curseur
     const selection = window.getSelection();
     const range = selection?.getRangeAt(0);
     const cursorPosition = range ? range.startOffset : null;
 
-    const newValue = inputElement.innerText.trim(); // Récupérer la nouvelle valeur
+    const newValue = inputElement.innerText.trim(); 
 
-    // ✅ Convertir en minutes avant de stocker
     const convertedMinutes = this.parseDuree(newValue);
     if (isNaN(convertedMinutes)) {
       console.error("Format invalide :", newValue);
       return;
     }
 
-    // ✅ Stocker en minutes pour éviter les erreurs de format
     this.selectedService.historique[index].duree = convertedMinutes;
 
-    // ✅ Forcer Angular à ne pas re-render tout de suite (éviter le reset du curseur)
     setTimeout(() => {
       if (cursorPosition !== null) {
         const range = document.createRange();
@@ -428,7 +424,8 @@ getTypeVehiculeLibelle(typevehiculeId: string): string {
     service: '',
     typevehicule: '',
     prixMin: null,
-    prixMax: null
+    prixMax: null,
+    limit: this.itemsPerPage
   };
   searchServices() {
     this.serviceService.searchServices(this.filters).subscribe({
@@ -447,7 +444,9 @@ getTypeVehiculeLibelle(typevehiculeId: string): string {
         }));
       },
       error: (error) => {
-        console.error(' Erreur recherche services:', error);
+        console.log(error.error.msg);
+        this.errorService.showError(error.error.msg);
+        // console.error(' Erreur recherche services:', error);
       }
     });
   }

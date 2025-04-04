@@ -1,0 +1,126 @@
+<div id="content-page" class="content-page">
+  <div class="container">
+    <!-- Cards pour l'affichage des informations du client ou de la liste -->
+    <div class="row">
+      <div class="col-lg-2"></div>
+      <div class="col-lg-4" *ngIf="isClientDetail">
+        <div class="card iq-mb-3 border-primary">
+          <div class="card-body text-primary">
+            <h4 class="card-title text-primary">Voitures enregistrées</h4>
+            <p class="card-text">{{ totalVehicule }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2"></div>
+      <div class="col-lg-4" *ngIf="isClientDetail">
+        <div class="card iq-mb-3 border-success">
+          <div class="card-body text-success">
+            <h4 class="card-title text-success">Rendez-vous prises</h4>
+            <p class="card-text">{{ totalrdv }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations du client -->
+    <div class="row" style="margin-left: 5%;" *ngIf="isClientDetail">
+      <div class="col-sm-12">
+        <div class="iq-card">
+          <div class="iq-card-header d-flex justify-content-between">
+            <div class="iq-header-title">
+              <h4 class="card-title">
+                <i class="las la-user-circle"></i> Informations du client
+              </h4>
+            </div>
+          </div>
+          <div class="iq-card-body">
+            <ul class="list-group">
+              <li class="list-group-item d-flex align-items-center">
+                <i class="las la-user-alt mr-2 text-primary"></i>
+                <strong>Nom :</strong> <span class="ml-auto">{{ utilisateur.nom | uppercase}} {{ utilisateur.prenom }}</span>
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="las la-envelope mr-2 text-warning"></i>
+                <strong>Email :</strong> <span class="ml-auto">{{ utilisateur.email }}</span>
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="las la-user-tag mr-2 text-info"></i>
+                <strong>Rôle :</strong> <span class="ml-auto">{{ utilisateur.role }}</span>
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="las la-calendar-alt mr-2 text-danger"></i>
+                <strong>Date d'inscription :</strong>
+                <span class="ml-auto">{{ utilisateur.createdAt | date: 'd MMMM yyyy' }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste de véhicules pour un client spécifique -->
+    <div class="row" style="margin-left: 5%;" *ngIf="isClientDetail">
+      <div class="col-sm-12">
+        <div class="iq-card">
+          <div class="iq-card-header d-flex justify-content-between">
+            <div class="iq-header-title">
+              <h4 class="card-title">Liste de ses véhicules</h4>
+            </div>
+          </div>
+          <div class="iq-card-body">
+            <div id="table" class="table-editable">
+              <table class="table table-bordered table-responsive-md table-striped text-center">
+                <thead>
+                  <tr>
+                    <th>Matricule</th>
+                    <th>Libelle</th>
+                    <th>Type véhicule</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let vehicule of mesvehicules">
+                    <td>{{ vehicule.matricule }}</td>
+                    <td>{{ vehicule.libelle }}</td>
+                    <td>{{ vehicule.typevehicule?.nom }}</td>
+                    <td>{{ vehicule.description }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="!isClientDetail">
+      <div class="col-sm-12">
+        <div class="iq-card">
+          <div class="iq-card-header d-flex justify-content-between">
+            <div class="iq-header-title">
+              <h4 class="card-title">Liste des Clients</h4>
+            </div>
+          </div>
+          <div class="iq-card-body">
+            <ul class="list-group">
+              <li class="list-group-item d-flex align-items-center" *ngFor="let client of clients">
+                <i class="las la-user-circle mr-3 text-primary" style="font-size: 24px;"></i>
+                <div class="d-flex justify-content-between w-100">
+                  <div>
+                    <strong>{{ client.nom }} {{ client.prenom }}</strong>
+                    <p class="mb-0 text-muted">{{ client.email }}</p>
+                  </div>
+                  <button class="btn btn-primary btn-sm" [routerLink]="['/clients', client._id]" role="button">
+                    Voir la fiche
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>

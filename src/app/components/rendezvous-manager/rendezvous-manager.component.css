@@ -1,0 +1,58 @@
+.icon-large {
+  font-size: 2.5rem;
+  color: #007bff;
+}
+
+.badge-custom {
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+  transition: 0.3s ease;
+}
+
+a.d-flex {
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+a.d-flex:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.text-dark, .text-dark a {
+  color: black ;
+}
+
+.text-decoration-none {
+  text-decoration: none !important;
+}
+.formulaires{
+  background-color: #ebf4fd;
+  border-radius: 20px;
+  padding: 2%;
+}
+.formulaires input,
+.formulaires select {
+  background-color: #fff !important;
+  border: 1px solid #ced4da; /* Bordure plus visible */
+  color: #495057; /* Texte plus lisible */
+}
+
+.form-group button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* S'adapte à la hauteur du parent */
+  width: 100%; /* (Facultatif) Remplit la largeur si nécessaire */
+}
