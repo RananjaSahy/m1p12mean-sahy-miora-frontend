@@ -28,4 +28,38 @@ constructor(private http: HttpClient, private authService: AuthService) {
   updateAction(actionId: string, data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/${actionId}`, data,{ headers: this.getAuthHeaders() });
   }
+
+  setActionEncours(actionId: string): Observable<any> {
+    return this.http.patch(
+      `${this.apiUrl}/${actionId}/encours`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+
+  terminerAction(actionId: string): Observable<any> {
+    return this.http.patch(
+      `${this.apiUrl}/${actionId}/terminer`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+
+  annulerAction(actionId: string): Observable<any> {
+    return this.http.patch(
+      `${this.apiUrl}/${actionId}/annuler`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  replannifierAction(actionId: string): Observable<any> {
+    return this.http.patch(
+      `${this.apiUrl}/${actionId}/replannifier`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
 }

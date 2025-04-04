@@ -7,8 +7,10 @@
               <h4 class="card-title mb-0">Mes actions</h4>
             </div>
             <div class="card-body">
+              <div *ngIf="errormessage" class="alert alert-danger">{{ errormessage }}</div>
+                <div *ngIf="successmessage" class="alert alert-success">{{ successmessage }}</div>
                 <ul class="todo-task-lists m-0 p-0">
-                  @for (action of mesactions; track action._id) {
+                  @for (action of actions; track action._id) {
                       <li class="d-flex align-items-center p-3" (click)="selectAction(action)" [class.selected]="action === actionselectionne">
                         <div class="media-support-info ml-3">
                           <h6 class="d-inline-block">{{action.vehicule.matricule}}</h6>
@@ -36,9 +38,9 @@
             <div *ngIf="actionselectionne" class="card shadow-lg p-4 modif">
               <div class="card-header text-center bg-primary text-white">
                 <h4 class="card-title mb-0">Détails de l'action</h4>
-                
               </div>
               <div class="card-body">
+                
                 <ul class="todo-task-lists m-0 p-0">
                   <li class="d-flex align-items-center p-3">
                     <div class="media-support-info ml-3">
@@ -75,24 +77,28 @@
                       </p>
                     </div>
                   </li>
-                    @if (actionselectionne.statutActuel.etat <= 5 && actionselectionne.statutActuel.etat > 0) {
-                      <button (click)="annulerAction()" type="button" class="btn btn-danger float-right">Annuler l'action</button>
+                  @if (actionselectionne.statutActuel.etat === 1) {
+                  <button (click)="mettreEnCours()" type="button" class="btn btn-secondary float-left">Faire l'action</button>
+                  }
+                  @if (actionselectionne.statutActuel.etat === 5) {
+                    <button (click)="terminerAction()" type="button" class="btn btn-success float-left">Terminer</button>
                     }
-                    @if (actionselectionne.statutActuel.etat <= 5 && actionselectionne.statutActuel.etat !== 1) {
-                      <button (click)="replannifierAction()" type="button" class="btn btn-warning float-right">Replannifier l'action</button>
-                    }
+                  @if (actionselectionne.statutActuel.etat <= 5 && actionselectionne.statutActuel.etat > 0) {
+                    <button (click)="annulerAction()" type="button" class="btn btn-danger float-right">Annuler l'action</button>
+                  }
+                  @if (actionselectionne.statutActuel.etat <= 5 && actionselectionne.statutActuel.etat !== 1) {
+                    <button (click)="replannifierAction()" type="button" class="btn btn-warning float-right">Replannifier l'action</button>
+                  }
                 </ul>
               </div>
             </div>
           </div>
-
+          
         </div>
-
+  
       </div>
     </div>
   </div>
-
-
   
 
   

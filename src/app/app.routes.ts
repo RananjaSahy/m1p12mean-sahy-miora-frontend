@@ -17,6 +17,7 @@ import { ActionComponent } from './components/action/action.component';
 import { StatistiqueComponent } from './components/statistique/statistique.component';
 import { ClientDetailComponent } from './components/clientdetail/clientdetail.component';
 import { FactureComponent } from './components/facture/facture.component';
+import { ActionMecanoComponent } from './components/action-mecano/action-mecano.component';
 export const routes: Routes = [
     {
         path: '',
@@ -36,6 +37,8 @@ export const routes: Routes = [
         { path: 'clients', component: ClientDetailComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: 'clients/:id', component: ClientDetailComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: 'facture/:id', component: FactureComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
+        { path : 'actionmecano', component : ActionMecanoComponent, canActivate : [AuthGuard], data: {roles : ['mecanicien']}},
+        // { path: 'clients/:id', component: ClientDetailComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: '', redirectTo: 'services', pathMatch: 'full' },
         ],
     },

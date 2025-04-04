@@ -32,6 +32,11 @@
               </ul>
            </li>
           }
+          @if(userRole && userRole === 'mecanicien'){
+            <li>
+              <a href="actionmecano"><i class="las la-bolt"></i><span>Actions</span></a>
+            </li>
+          }
           @if(userRole && userRole === 'client'){
             <li>
               <a href="mesvehicules"><i class="las la-car"></i><span>Mes véhicules</span></a>
