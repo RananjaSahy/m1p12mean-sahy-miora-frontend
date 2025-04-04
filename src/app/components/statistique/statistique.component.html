@@ -1,0 +1,33 @@
+<div id="content-page" class="content-page">
+  <div class="container">
+    <div class="row">
+      <div class="form-row d-flex align-items-center gap-2">
+        <div class="form-group col-md-3">
+          <label class="control-label">Date début</label>
+          <input type="date" class="form-control text search-input" [(ngModel)]="filters.dateMin" name="dateMin">
+        </div>
+        <div class="form-group col-md-3">
+          <label class="control-label">Date début</label>
+          <input type="date" class="form-control text search-input" [(ngModel)]="filters.dateMax" name="dateMax">
+        </div>
+        <div class="form-group col-md-1 d-flex align-items-center">
+          <button type="submit" class="search-link btn btn-primary" (click)="onDateChange()">
+            <i class="ri-search-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <h3 class="text-center"> Répartition des taches par mécanicien</h3>
+    <div class="row justify-content-center">
+      <apx-chart
+        *ngIf="chartOptions"
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [xaxis]="chartOptions.xaxis"
+        [plotOptions]="chartOptions.plotOptions"
+        [dataLabels]="chartOptions.dataLabels"
+        [tooltip]="chartOptions.tooltip">
+      </apx-chart>
+    </div>
+  </div>
+</div>

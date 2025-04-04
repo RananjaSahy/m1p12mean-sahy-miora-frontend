@@ -1,0 +1,132 @@
+<div id="content-page" class="content-page">
+  <div class="container">
+    <div class="row" style="margin-right: -20%;">
+      <div class="col-sm-12">
+        <div class="iq-card-header d-flex justify-content-between">
+           <div class="iq-header-title">
+              <h4 class="card-title">Réservations</h4>
+           </div>
+        </div>
+     </div>
+     <div class="col-sm-12 formulaires">
+      <h6>Filtrer par </h6>
+      <form (submit)="applyFilters()" class="searchbox ml-5">
+        <div class="form-row d-flex align-items-center gap-2">
+          <div class="form-group col-md-3">
+            <label class="control-label">Date début</label>
+            <input type="date" class="form-control text search-input" [(ngModel)]="filters.dateMin" name="dateMin">
+          </div>
+          <div class="form-group col-md-3">
+            <label class="control-label">Date fin</label>
+            <input type="date" class="form-control text search-input" [(ngModel)]="filters.dateMax" name="dateMax">
+          </div>
+          <div class="form-group col-md-3">
+            <label class="control-label">Type du véhicule</label>
+            <select class="form-control text search-input" [(ngModel)]="filters.typevehicule" name="typevehicule">
+              <option value="">Tous</option>
+              <option *ngFor="let type of type_vehicules" [value]="type._id">{{ type.libelle }}</option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label class="control-label">Services</label>
+            <select class="form-control text search-input" [(ngModel)]="filters.services" name="services">
+              <option value="">Tous</option>
+              <option *ngFor="let service of servicesList" [value]="service._id">{{ service.nom }}</option>
+            </select>
+           </div>
+        </div>
+        <div class="form-row d-flex align-items-center gap-2">
+          <div class="form-group col-md-3">
+            <label class="control-label">Heure entre</label>
+            <input type="time" class="form-control text search-input" [(ngModel)]="filters.heureMin" name="heureMin">
+          </div>
+          <div class="form-group col-md-3">
+            <label class="control-label">et</label>
+            <input type="time" class="form-control text search-input" [(ngModel)]="filters.heureMax" name="heureMax">
+          </div>
+          <div class="form-group col-md-3">
+            <label class="control-label">Client</label>
+            <input type="text" class="form-control text search-input" placeholder="Nom utilisateur" [(ngModel)]="filters.nomUtilisateur" name="nomUtilisateur">
+          </div>
+          <div class="form-group col-md-1 d-flex align-items-center">
+            <button type="submit" class="search-link btn btn-primary">
+              <i class="ri-search-line"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+     </div>
+     <div class="col-sm-12 mt-5">
+      <div class="iq-card">
+        <div class="iq-card-body">
+           <ul class="notification-list m-0 p-0">
+            <a *ngFor="let rdv of rendezvousList"
+            href="services"
+            class="d-flex align-items-center justify-content-between p-3 shadow-sm rounded text-dark">
+              <div class="d-flex align-items-center">
+                <div class="user-img img-fluid">
+                  <i class="lab la-blogger icon-large"></i>
+                </div>
+                <div class="media-support-info ml-3">
+                  <h6>
+                    <code>{{ rdv.vehicule.libelle }}</code> de
+                    <a class="text-primary"  [routerLink]="['/clients', rdv.utilisateur._id]">
+                      {{ rdv.utilisateur.nom | uppercase }} {{ rdv.utilisateur.prenom }}
+                    </a>
+                  </h6>
+                  <p class="mb-0">le <strong>{{ rdv.date | date: 'd MMMM yyyy HH:mm' }}</strong></p>
+                  <p>{{ rdv.commentaire }}</p>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="badge badge-info badge-custom" style="background-color:#0056b3 !important;">
+                  {{ rdv.services.length}}  services
+                </span>
+                <div class="dropdown">
+                  <span class="mx-3 iq-notify iq-bg-info rounded-circle action-icon" data-toggle="dropdown">
+                    <i class="ri-information-line"></i>
+                  </span>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" [routerLink]="['/task', rdv._id]">
+                      <i class="ri-eye-fill mr-2"></i>Détails
+                    </a>
+         <!-- <a class="dropdown-item" href="#"><i class="ri-delete-bin-6-fill mr-2"></i>Suspendre</a> -->
+                  </div>
+                </div>
+              </div>
+            </a>
+           </ul>
+        </div>
+     </div>
+     <div class="d-flex justify-content-center mt-1" *ngIf="totalPages > 1">
+      <nav>
+        <ul class="pagination pagination-sm shadow-sm rounded">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link border-0 text-dark bg-light"
+                    (click)="changePage(currentPage - 1)">Précédent
+              <i class="ri-arrow-left-s-line"></i>
+            </button>
+          </li>
+          <li class="page-item"
+              *ngFor="let page of [].constructor(totalPages); let i = index"
+              [class.active]="currentPage === i + 1">
+            <button class="page-link border-0"
+                    [ngClass]="{'text-white bg-primary': currentPage === i + 1, 'text-dark bg-light': currentPage !== i + 1}"
+                    (click)="changePage(i + 1)">
+              {{ i + 1 }}
+            </button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link border-0 text-dark bg-light"
+                    (click)="changePage(currentPage + 1)">Suivant
+              <i class="ri-arrow-right-s-line"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+     </div>
+    </div>
+
+  </div>
+</div>

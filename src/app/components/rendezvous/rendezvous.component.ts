@@ -56,6 +56,7 @@ export class RendezvousComponent implements OnInit, AfterViewInit, OnDestroy {
 selectedServices: { [key: string]: boolean } = {}; // Stocke l'état des cases cochées
 rendezvousDetails: any = null; // Stocke les détails du rendez-vous
   email: string = '';
+  totalRdvPourLaDate: number =0;
 
   constructor(
     private serviceService: ServiceService,
@@ -85,12 +86,11 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
   ngOnInit(): void {
     this.getVehicules();
     this.getRendezvousUtilisateur();
-    console.log(this.detail);
+    this.userEmail = this.authService.getUserEmail();
   }
   getVehicules(): void {
     this.rendezvousService.getVehicules().subscribe(
       (response) => {
-        console.log(response);
         this.vehiculesDisponibles = response.mesvehicules;
         this.cdr.detectChanges();
       },
@@ -112,9 +112,14 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
     }
   }
 
+
   initCalendar(): void {
+    if (this.calendar) {
+      this.calendar.destroy();
+    }
     if (this.calendarContainer?.nativeElement && !this.calendar) {
       this.calendar = new Calendar(this.calendarContainer.nativeElement, {
+        locale:'fr',
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
         timeZone: 'UTC',
         defaultView: 'dayGridMonth',
@@ -123,12 +128,6 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         },
-        events: [
-          { title: 'All Day Event', start: '2024-03-01', color: '#fc9919' },
-          { title: 'Long Event', start: '2024-03-07', end: '2024-03-10', color: '#ffc107' },
-          { title: 'Meeting', start: '2024-03-12T10:30:00', end: '2024-03-12T12:30:00', color: '#827af3' },
-          { title: 'Birthday Party', start: '2024-03-28T07:00:00', color: '#28a745' }
-        ]
       });
       this.calendar.render();
     }
@@ -179,7 +178,6 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
 
     if (selectedService && !this.servicesSelectionnes.some(service => service._id === selectedServiceId)) {
       this.servicesSelectionnes.push(selectedService);
-      console.log("Services sélectionnés :", this.servicesSelectionnes);
     }
   }
 
@@ -205,7 +203,6 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
     };
     // alert(JSON.stringify(rendezvousData, null, 2));
     this.rendezvousService.ajouterRendezvous(rendezvousData).subscribe(response => {
-      console.log('Rendez-vous ajouté avec succès', response);
       this.rendezvousDetails = response.prix; // Stocker les détails de prix et durée
       setTimeout(() => {
         const modalButton = document.getElementById('openModalBtn') as HTMLElement;
@@ -234,40 +231,94 @@ getRendezvousUtilisateur(): void {
     }
   );
 }
+getEventColor(date: string | Date): string {
+  const rdvDate = new Date(date);
+  const today = new Date();
+
+  // Supprime l'heure pour comparer uniquement la date
+  today.setHours(0, 0, 0, 0);
+  rdvDate.setHours(0, 0, 0, 0);
+
+  if (rdvDate < today) {
+    return 'event-past';  // Classe CSS pour les événements passés
+  } else if (rdvDate.getTime() === today.getTime()) {
+    return 'event-today';  // Classe CSS pour les événements d'aujourd'hui
+  } else {
+    return 'event-future';  // Classe CSS pour les événements futurs
+  }
+}
+
 updateCalendarEvents(): void {
   if (this.calendar) {
     this.calendar.removeAllEvents();
-    console.log(this.rendezvousUtilisateur);
     this.rendezvousUtilisateur.forEach(rdv => {
       this.calendar.addEvent({
-        title: `Pour ${rdv.vehicule.libelle} - ${rdv.services.map((s: { nom: any; }) => s.nom).join(", ")}`,
+        title: `${rdv.vehicule.libelle}`,
         start: rdv.date,
-        color: '#007bff',
+        classNames: [this.getEventColor(rdv.date)],
+        eventColor:"green",
         extendedProps: { rdv } // Stocke les détails du rendez-vous
       });
     });
-
     // Gérer le clic sur un événement
-    this.calendar.on('eventClick', (info: { event: { extendedProps: { rdv: any; }; }; }) => {
+    this.calendar.on("eventClick", (info: { event: { extendedProps: { rdv: any; }; }; }) => {
       const selectedRdv = info.event.extendedProps.rdv;
-      this.afficherRendezvousDuJour(selectedRdv.date);
+      this.afficherRendezvousDuJour(selectedRdv);
     });
   }
 }
-// getServicesNoms(rdv: any): string {
-//   return rdv.services.map((s: { nom: string }) => s.nom).join("et  ");
-// }
-getServicesNoms(rdv: any): string {
-  return rdv.services.map((s: { nom: any; prixEstime: any; dureeEstimee: any; }) => `${s.nom} (${s.prixEstime || 'N/A'} Ar, ${s.dureeEstimee || 'N/A'} min)`).join(', ');
+
+getStatus(dateRdv: string): string {
+  const today = new Date();
+  const rdvDate = new Date(dateRdv);
+
+  if (rdvDate.toDateString() === today.toDateString()) {
+    return "À présent";  // Si c'est aujourd'hui
+  } else if (rdvDate > today) {
+    return "Planifié";  // Si c'est une date future
+  }
+  return "";  // Si la date est passée, on n'affiche rien
 }
 
-afficherRendezvousDuJour(date: string): void {
-  this.selectedDateForDetails = date;
-  this.rendezvousDuJour = this.rendezvousUtilisateur.filter(rdv =>
-    new Date(rdv.date).toDateString() === new Date(date).toDateString()
-  );
-  this.showRendezvousList = true; // Afficher la liste au lieu du formulaire
+getServicesNoms(rdv: any): string {
+
+  if (rdv.services && rdv.services.length > 0) {
+    return rdv.services.map((s:any) => {
+      const nomService = s.nom ? s.nom :'Service inconnu';
+      const prix = s.prixEstime ? `${s.prixEstime} Ar` : 'N/A';
+      const duree = s.dureeEstimee ? `${s.dureeEstimee} min` : 'N/A';
+      return `${nomService} (${prix}, ${duree})`;
+    }).join(', ');
+  }
+
+  return 'Aucun service disponible';
 }
+
+
+
+afficherRendezvousDuJour(rdv: any): void {
+  console.log("rdv = ",rdv);
+
+  // Extraire la date du rendez-vous
+  const dateRdv = new Date(rdv.date);
+
+  // Stocker cette date pour l'affichage
+  this.selectedDateForDetails = dateRdv.toDateString();
+
+  console.log("Selected Date for Details:", this.selectedDateForDetails);
+
+  // Filtrer les rendez-vous ayant la même date (peu importe l'heure)
+  this.rendezvousDuJour = this.rendezvousUtilisateur.filter(r =>
+    new Date(r.date).toDateString() === dateRdv.toDateString()
+  );
+
+  // Mettre à jour le nombre total de rendez-vous à cette date
+  this.totalRdvPourLaDate = this.rendezvousDuJour.length;
+
+  // Afficher la liste des rendez-vous
+  this.showRendezvousList = true;
+}
+
 
 
 // partie modifier le rendez vous
@@ -276,10 +327,10 @@ afficherRendezvousDuJour(date: string): void {
 toggleSelection(serviceId: string, event: Event): void {
   const checked = (event.target as HTMLInputElement).checked;
   this.selectedServices[serviceId] = checked;
-  console.log(`Service ${serviceId} coché :`, checked);
 }
 
 confirmRendezVous(): void {
+
   if (!this.rendezvousDetails || !this.rendezvousDetails.details) {
     console.error("Aucun détail de rendez-vous disponible !");
     return;
@@ -292,7 +343,7 @@ confirmRendezVous(): void {
 
 
   if (servicesRestants.length === 0) {
-    console.warn("⚠ Tous les services ont été supprimés, annulation de l'envoi.");
+    console.warn("Tous les services ont été supprimés, annulation de l'envoi.");
     return;
   }
 
@@ -304,12 +355,10 @@ confirmRendezVous(): void {
     commentaire: this.commentaire,
     email:this.email
   };
-
-
   // Envoyer les services restants
   this.rendezvousService.confirmerRendezvous(rendezvousData).subscribe(
     response => {
-      console.log("Rendez-vous mis à jour avec succès !", response);
+      window.location.reload();
     },
     error => {
       console.error("Erreur lors de la mise à jour du rendez-vous :", error);

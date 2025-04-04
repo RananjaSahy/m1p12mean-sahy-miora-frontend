@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class LoginComponent{
 
   error = {msg:''};
-  user = {email: '', mdp:''};
+  user = {email: 'sahyrananja@gmail.com', mdp:'123456'};
 
   constructor(private authservice: AuthService,private router: Router, private cdRef: ChangeDetectorRef) {}
 
