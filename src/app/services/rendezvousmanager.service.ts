@@ -27,4 +27,7 @@ export class RendezvousMService {
       params: params
     });
   }
+  getInvoice(idRendezvous: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/action/facture/${idRendezvous}`);
+  }
 }

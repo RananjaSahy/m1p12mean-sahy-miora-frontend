@@ -87,12 +87,10 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
     this.getVehicules();
     this.getRendezvousUtilisateur();
     this.userEmail = this.authService.getUserEmail();
-    console.log(this.detail);
   }
   getVehicules(): void {
     this.rendezvousService.getVehicules().subscribe(
       (response) => {
-        console.log(response);
         this.vehiculesDisponibles = response.mesvehicules;
         this.cdr.detectChanges();
       },
@@ -180,7 +178,6 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
 
     if (selectedService && !this.servicesSelectionnes.some(service => service._id === selectedServiceId)) {
       this.servicesSelectionnes.push(selectedService);
-      console.log("Services sélectionnés :", this.servicesSelectionnes);
     }
   }
 
@@ -206,7 +203,6 @@ rendezvousDetails: any = null; // Stocke les détails du rendez-vous
     };
     // alert(JSON.stringify(rendezvousData, null, 2));
     this.rendezvousService.ajouterRendezvous(rendezvousData).subscribe(response => {
-      console.log('Rendez-vous ajouté avec succès', response);
       this.rendezvousDetails = response.prix; // Stocker les détails de prix et durée
       setTimeout(() => {
         const modalButton = document.getElementById('openModalBtn') as HTMLElement;
@@ -267,16 +263,11 @@ updateCalendarEvents(): void {
     // Gérer le clic sur un événement
     this.calendar.on("eventClick", (info: { event: { extendedProps: { rdv: any; }; }; }) => {
       const selectedRdv = info.event.extendedProps.rdv;
-      console.log("selectedrdv = ",selectedRdv);
       this.afficherRendezvousDuJour(selectedRdv);
     });
   }
 }
 
-
-// getServicesNoms(rdv: any): string {
-//   return rdv.services.map((s: { nom: string }) => s.nom).join("et  ");
-// }
 getStatus(dateRdv: string): string {
   const today = new Date();
   const rdvDate = new Date(dateRdv);
@@ -290,10 +281,8 @@ getStatus(dateRdv: string): string {
 }
 
 getServicesNoms(rdv: any): string {
-  console.log("Rendez-vous =", rdv);
 
   if (rdv.services && rdv.services.length > 0) {
-    console.log("services.nomms = ",rdv.services)
     return rdv.services.map((s:any) => {
       const nomService = s.nom ? s.nom :'Service inconnu';
       const prix = s.prixEstime ? `${s.prixEstime} Ar` : 'N/A';
@@ -308,8 +297,7 @@ getServicesNoms(rdv: any): string {
 
 
 afficherRendezvousDuJour(rdv: any): void {
-  console.log("hereee");
-  console.log(rdv);
+  console.log("rdv = ",rdv);
 
   // Extraire la date du rendez-vous
   const dateRdv = new Date(rdv.date);
@@ -339,7 +327,6 @@ afficherRendezvousDuJour(rdv: any): void {
 toggleSelection(serviceId: string, event: Event): void {
   const checked = (event.target as HTMLInputElement).checked;
   this.selectedServices[serviceId] = checked;
-  console.log(`Service ${serviceId} coché :`, checked);
 }
 
 confirmRendezVous(): void {
@@ -372,7 +359,6 @@ confirmRendezVous(): void {
   this.rendezvousService.confirmerRendezvous(rendezvousData).subscribe(
     response => {
       window.location.reload();
-      console.log("Rendez-vous mis à jour avec succès !", response);
     },
     error => {
       console.error("Erreur lors de la mise à jour du rendez-vous :", error);

@@ -15,6 +15,8 @@ import { RendezvousManagerComponent } from './components/rendezvous-manager/rend
 import { MesactionsComponent } from './components/mesactions/mesactions.component';
 import { ActionComponent } from './components/action/action.component';
 import { StatistiqueComponent } from './components/statistique/statistique.component';
+import { ClientDetailComponent } from './components/clientdetail/clientdetail.component';
+import { FactureComponent } from './components/facture/facture.component';
 export const routes: Routes = [
     {
         path: '',
@@ -31,8 +33,9 @@ export const routes: Routes = [
         { path: 'occupation', component: StatistiqueComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: 'task', component: ActionComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: 'task/:id', component: ActionComponent, canActivate: [AuthGuard], data: {roles : ['manager']} },
-
-        // { path: 'clients/:id', component: ClientDetailComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
+        { path: 'clients', component: ClientDetailComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
+        { path: 'clients/:id', component: ClientDetailComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
+        { path: 'facture/:id', component: FactureComponent ,canActivate: [AuthGuard], data: {roles : ['manager']} },
         { path: '', redirectTo: 'services', pathMatch: 'full' },
         ],
     },

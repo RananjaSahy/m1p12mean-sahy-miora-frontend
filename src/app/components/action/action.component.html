@@ -135,15 +135,16 @@
                 </div>
               </li>
             </ul>
-            <!-- Affichage des responsables -->
             <ul *ngIf="selectedAction.responsables.length > 0">
-
               <li *ngFor="let resp of selectedAction.responsables">
                 <i class="las la-user"></i> {{ resp.nom }} {{ resp.prenom }}
               </li>
             </ul>
-
-            <!-- Formulaire d'ajout de responsable si aucun responsable -->
+            <a [routerLink]="['/facture', selectedAction.rendezVous._id]"
+             class="btn btn-primary mb-3"
+            *ngIf="selectedAction.statutActuel.etatString=='Terminé'">
+              Voir la facture
+            </a>
             <div *ngIf="selectedAction.responsables.length === 0" class="form-group row">
               <div class="col-sm-4"><label>Ajouter un responsable :</label></div>
               <div class="col-sm-8">
@@ -153,6 +154,8 @@
                   </option>
                 </select>
               </div>
+              <p class="pt-2"><a href="occupation">Nombre de taches non terminées pour chaque mécaninciens</a>
+                pour mieux repartir le travail</p>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                 <button (click)="addResponsable()" class="btn btn-primary mt-2 btn-sm"  data-dismiss="modal">Ajouter</button>

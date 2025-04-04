@@ -71,6 +71,7 @@ export class ActionComponent implements OnInit {
   openModal(action: any) {
     this.selectedAction = { ...action };
     this.selectedActionId = action._id;
+    console.log("this.selectedAction  = ",this.selectedAction );
     this.cdr.detectChanges();
     console.log("selecte = ",this.selectedAction);
   }
